@@ -1,1 +1,1 @@
-# minesweeper
+# Minesweeper Game created with Ruby
