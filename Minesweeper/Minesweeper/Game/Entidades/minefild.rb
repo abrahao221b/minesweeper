@@ -8,9 +8,9 @@ class CampoMinado
     def initialize(altura, largura)
         @altura = altura
         @largura = largura
-        @celulas = Celula.new(0,0, 40)
-        @colunas = self.largura / self.celulas.getSize()
-        @linhas =  self.altura / self.celulas.getSize()
+        @celulas = Celula.new(0, 0, 40)
+        @linhas = self.altura / self.celulas.getSize()
+        @colunas =  self.largura / self.celulas.getSize()
         @grid = criarArray2D()              
     end
 
@@ -18,18 +18,79 @@ class CampoMinado
     def criarArray2D()
         grid = Array.new(self.colunas){Array.new(self.linhas)}
         k = 0
-        self.colunas.times do
+        self.linhas.times do
             w = 0 
-            self.linhas.times do
-                grid[k][w] = Celula.new(k*self.celulas.getSize() + 20,  w*self.celulas.getSize() + 30, self.celulas.getSize())
+            self.colunas.times do
+                grid[k][w] = Celula.new(k, w, self.celulas.getSize())
                 grid[k][w].setMina()
+                w += 1
+                            
+            end
+            k += 1
+        end
+
+        return grid
+    end
+
+    # verifica se o elemento está dentro da matriz
+    def dentroDoGrid(k, w)
+        if (k >= 0 and w >= 0 and k < self.colunas and w < self.linhas)
+            return true
+        end
+        return false
+    end
+    
+    # Verifica os vizinhos de cada elemento da matriz
+    def verificaVizinhos()
+        arrayDeslocamentoV = Array[1, 0, -1, 0, 1, 1, -1, -1]
+        arrayDeslocamentoH = Array[0, -1, 0, 1, 1, -1, 1, -1]
+        k = 0
+        self.linhas.times do
+            w = 0 
+            self.colunas.times do
+                i = 0
+                while i <= 7
+                    x = k + arrayDeslocamentoV[i]
+                    y = w + arrayDeslocamentoH[i]
+                    if dentroDoGrid(x, y)
+                        self.grid[k][w].setarVizinhos(self.grid[x][y])
+                    end
+                    i += 1
+                end 
+                w += 1            
+            end
+            k += 1
+        end
+
+    end
+    
+
+    # Conta o número de minas ao redor
+    def radarDeMinas()
+        
+        k = 0
+        self.linhas.times do
+            w = 0 
+            self.colunas.times do
+                if(self.grid[k][w].getMina()) 
+                    self.grid[k][w].setQuantidadeMinas(-1)
+                    break 
+                end
+                total = 0
+                for i in self.grid[k][w].getArrayDeVizinhos() do
+                    if i.getMina() 
+                        total += 1
+                    end
+                end
+                self.grid[k][w].setQuantidadeMinas(total)
                 w += 1                
             end
             k += 1
         end
-        return grid
+
     end
     
+
     def getColunas()
         return self.colunas
     end
@@ -51,10 +112,16 @@ class CampoMinado
     end
 end
 
+# Teste
 # minefild = CampoMinado.new(400,400)
+# minefild.verificaVizinhos()
+# minefild.radarDeMinas()
 
 # for arr in minefild.getGrid do
 #     for cell in arr do
-#         puts cell.getMina()
+#         puts cell
+#         for i in cell.getArrayDeVizinhos()
+#             puts (String(i.getI()) + " " + String(i.getJ()))
+#         end
 #     end
 # end

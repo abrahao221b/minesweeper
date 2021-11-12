@@ -2,15 +2,18 @@ require 'ruby2d'
 
 # Entidade célula do campo minado
 class Celula
-    attr_accessor :mina, :revelado, :x, :y, :size, :numeroMinas     
+    attr_accessor :mina, :revelado, :x, :y, :i, :j, :size, :quantidadeMinas, :arrayDeVizinhos     
     
-    def initialize(x, y, size)
+    def initialize(i, j, size)
         @mina = true
         @revelado = false
-        @numeroMinas = 0
-        @x = x
-        @y = y
+        @i = i
+        @j = j
         @size = size
+        @x = i*self.size + 20
+        @y = j*self.size + 30
+        @quantidadeMinas = 0
+        @arrayDeVizinhos = Array[]
     end
 
     def setMina()
@@ -24,6 +27,7 @@ class Celula
     def setStatus(valor)
         self.revelado = valor
     end
+    
 
     # Diz qual é o estado do mouse em relação a cada célula
     def mouseCelulaStatus(x, y)
@@ -36,6 +40,26 @@ class Celula
     
     def setY(valor)
         self.y = valor
+    end
+
+    def setSize(valor)
+        self.size = valor
+    end
+
+    def setQuantidadeMinas(valor)
+        self.quantidadeMinas = valor
+    end
+
+    def setarVizinhos(cell)
+       self.arrayDeVizinhos().push(cell)
+    end
+    
+    def getI()
+        return self.i
+    end
+    
+    def getJ()
+        return self.j
     end
     
     def getX()
@@ -54,12 +78,17 @@ class Celula
         return self.revelado
     end
 
-    def getNumeroMinas()
-        return self.numeroMinas
+    def getQuantidadeMinas()
+        return self.quantidadeMinas
     end
     
     def getSize()
         return self.size
     end
+
+    def getArrayDeVizinhos()
+        return self.arrayDeVizinhos
+    end
+    
 
 end

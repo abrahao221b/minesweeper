@@ -14,9 +14,7 @@ class Display
     end
 
     def displayCelulas(mineFild)
-        k = 0
         i = 0
-        lineDisplay()
         mineFild.getColunas().times do
             j = 0
             mineFild.getLinhas().times do
@@ -26,43 +24,85 @@ class Display
                     color: 'black',
                     z: 0 
                 )
-                self.cells[k] = s
                 if mineFild.getGrid()[i][j].getStatus()
                     if mineFild.getGrid[i][j].getMina()
                         Circle.new(
-                            x: (mineFild.getGrid()[i][j].getSize()/2) + mineFild.getGrid()[i][j].getX() + i, y: (mineFild.getGrid()[i][j].getSize()/2) + mineFild.getGrid()[i][j].getY() + j,
+                            x: (mineFild.getGrid()[i][j].getSize()/2) + mineFild.getGrid()[i][j].getX() + i, 
+                            y: (mineFild.getGrid()[i][j].getSize()/2) + mineFild.getGrid()[i][j].getY() + j,
                             radius: mineFild.getGrid()[i][j].getSize() / 5,
                             sectors: 50,
                             color: 'green',
                             z: 0
                         )
+                    else
+                        Square.new(
+                            x: mineFild.getGrid()[i][j].getX() + i, y: mineFild.getGrid()[i][j].getY() + j,
+                            size: mineFild.getGrid()[i][j].getSize(),
+                            color: 'blue',
+                            z: 0 
+                        )
+
+                        if mineFild.getGrid()[i][j].getQuantidadeMinas() > 0
+                            Text.new(
+                                String(mineFild.getGrid()[i][j].getQuantidadeMinas()),
+                                x: (mineFild.getGrid()[i][j].getSize()/3) + mineFild.getGrid()[i][j].getX() + i, 
+                                y: (mineFild.getGrid()[i][j].getSize()/4) + mineFild.getGrid()[i][j].getY() + j,
+                                style: 'bold',
+                                size: mineFild.getGrid()[i][j].getSize() / 2,
+                                color: 'black',
+                                rotate: 0,
+                                z: 0
+                            )
+                        end
+                        
+
                     end
                 end
-            
-                k += 1
                 j += 1
             end
             i += 1
-            puts i
         end
 
     end
 
     def mousePressionado(grid, event_x , event_y)
-        i = 0
-        # k = 0
         for arr in grid do
-            j = 0
             for cell in arr do
                 if (cell.mouseCelulaStatus(event_x, event_y))
                     cell.setStatus(true)
                 end
-                # k += 1
-                j += 1
             end
-            i += 1
         end
     end
+
+    # def final(grid)
+    #     for arr in grid do
+    #         for cell in arr do
+    #             puts "oi"
+    #             if (cell.getMina() and cell.getStatus())
+    #                 lose(grid)
+    #             end
+    #         end
+    #     end
+    # end
+
+    # def lose(grid)
+    #     Window.set title: "You lose!"
+    #     i = 0
+    #     grid.getColunas().times do
+    #         j = 0
+    #         grid.getLinhas().times do
+    #             grid[i][j].setStatus(true)
+    #             j += 1
+    #         end
+    #         i += 1
+    #     end
+    #     k = 500
+    #     i.times do
+    #         displayCelulas(grid)
+    #     end
+    #     return
+    # end
     
 
     def lineDisplay()
@@ -121,18 +161,19 @@ end
 
 display = Display.new(450, 450)
 
-Window.new()
-
 # Setando a window e seu tamanho
-set width: display.getLargura, height: display.getLargura()
+Window.set width: display.getLargura, height: display.getLargura()
 
-set background: 'white'
+Window.set background: 'white'
 
 # Colocando o título da tela
-set title: display.getTituloJogo()
+Window.set title: display.getTituloJogo()
 
 
 mineFild = CampoMinado.new(400, 400)
+mineFild.verificaVizinhos()
+mineFild.radarDeMinas()
+display.lineDisplay()
 
 update do
   display.displayCelulas(mineFild)
@@ -141,6 +182,7 @@ update do
     
         when :left
             display.mousePressionado(mineFild.getGrid(), event.x, event.y)
+            # display.final(mineFild.getGrid())
         when :right
 
     end
@@ -148,4 +190,4 @@ update do
   end
 end
 
-show 
+Window.show 
