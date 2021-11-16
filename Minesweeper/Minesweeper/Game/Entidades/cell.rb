@@ -6,7 +6,7 @@ class Celula
     
     def initialize(i, j, size)
         @mina = true
-        @revelado = false
+        @revelado = true
         @i = i
         @j = j
         @size = size

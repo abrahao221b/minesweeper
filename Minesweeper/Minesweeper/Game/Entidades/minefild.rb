@@ -73,8 +73,7 @@ class CampoMinado
             w = 0 
             self.colunas.times do
                 if(self.grid[k][w].getMina()) 
-                    self.grid[k][w].setQuantidadeMinas(-1)
-                    break 
+                    self.grid[k][w].setQuantidadeMinas(-1) 
                 end
                 total = 0
                 for i in self.grid[k][w].getArrayDeVizinhos() do
@@ -113,15 +112,12 @@ class CampoMinado
 end
 
 # Teste
-# minefild = CampoMinado.new(400,400)
-# minefild.verificaVizinhos()
-# minefild.radarDeMinas()
+minefild = CampoMinado.new(400,400)
+minefild.verificaVizinhos()
+minefild.radarDeMinas()
 
-# for arr in minefild.getGrid do
-#     for cell in arr do
-#         puts cell
-#         for i in cell.getArrayDeVizinhos()
-#             puts (String(i.getI()) + " " + String(i.getJ()))
-#         end
-#     end
-# end
+for arr in minefild.getGrid do
+    for cell in arr do
+        puts cell.quantidadeMinas()
+    end
+end

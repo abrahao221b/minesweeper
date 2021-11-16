@@ -1,5 +1,5 @@
 require 'ruby2d'
-require_relative 'D:\Projetos Com Ruby\MinesweeperPrimeiraTentativa\Minesweeper\Game\Entidades\minefild.rb'
+require_relative 'D:\Projetos Com Ruby\Minesweeper\Minesweeper\Game\Entidades\minefild.rb'
 
 class Display
 
@@ -75,34 +75,33 @@ class Display
         end
     end
 
-    # def final(grid)
-    #     for arr in grid do
-    #         for cell in arr do
-    #             puts "oi"
-    #             if (cell.getMina() and cell.getStatus())
-    #                 lose(grid)
-    #             end
-    #         end
-    #     end
-    # end
+    def final(grid)
+        for arr in grid do
+            for cell in arr do
+                if (cell.getMina() and cell.getStatus())
+                    lose(grid)
+                end
+            end
+        end
+    end
 
-    # def lose(grid)
-    #     Window.set title: "You lose!"
-    #     i = 0
-    #     grid.getColunas().times do
-    #         j = 0
-    #         grid.getLinhas().times do
-    #             grid[i][j].setStatus(true)
-    #             j += 1
-    #         end
-    #         i += 1
-    #     end
-    #     k = 500
-    #     i.times do
-    #         displayCelulas(grid)
-    #     end
-    #     return
-    # end
+    def lose(grid)
+        Window.set title: "You lose!"
+        i = 0
+        grid.getColunas().times do
+            j = 0
+            grid.getLinhas().times do
+                grid[i][j].setStatus(true)
+                j += 1
+            end
+            i += 1
+        end
+        k = 500
+        k.times do
+            displayCelulas(grid)
+        end
+        return
+    end
     
 
     def lineDisplay()
