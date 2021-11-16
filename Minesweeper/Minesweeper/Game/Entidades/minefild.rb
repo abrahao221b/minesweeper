@@ -112,12 +112,12 @@ class CampoMinado
 end
 
 # Teste
-minefild = CampoMinado.new(400,400)
-minefild.verificaVizinhos()
-minefild.radarDeMinas()
+# minefild = CampoMinado.new(400,400)
+# minefild.verificaVizinhos()
+# minefild.radarDeMinas()
 
-for arr in minefild.getGrid do
-    for cell in arr do
-        puts cell.quantidadeMinas()
-    end
-end
+# for arr in minefild.getGrid do
+#     for cell in arr do
+#         puts cell.quantidadeMinas()
+#     end
+# end

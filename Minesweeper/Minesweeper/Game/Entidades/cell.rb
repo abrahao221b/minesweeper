@@ -6,7 +6,7 @@ class Celula
     
     def initialize(i, j, size)
         @mina = true
-        @revelado = true
+        @revelado = false
         @i = i
         @j = j
         @size = size
@@ -17,7 +17,7 @@ class Celula
     end
 
     def setMina()
-        if (rand(10) < 5)
+        if (rand(10) > 7)
             self.mina = true
         else
             self.mina = false

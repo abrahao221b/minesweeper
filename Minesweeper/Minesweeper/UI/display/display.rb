@@ -10,14 +10,13 @@ class Display
         @largura = largura
         @tituloTela = 'Game'
         @tituloJogo = 'Campo Minado'
-        @cells = Array[]
     end
 
     def displayCelulas(mineFild)
         i = 0
-        mineFild.getColunas().times do
+        mineFild.getLinhas().times do
             j = 0
-            mineFild.getLinhas().times do
+            mineFild.getColunas().times do
                 s = Square.new(
                     x: mineFild.getGrid()[i][j].getX() + i, y: mineFild.getGrid()[i][j].getY() + j,
                     size: mineFild.getGrid()[i][j].getSize(),
@@ -25,23 +24,14 @@ class Display
                     z: 0 
                 )
                 if mineFild.getGrid()[i][j].getStatus()
-                    if mineFild.getGrid[i][j].getMina()
-                        Circle.new(
-                            x: (mineFild.getGrid()[i][j].getSize()/2) + mineFild.getGrid()[i][j].getX() + i, 
-                            y: (mineFild.getGrid()[i][j].getSize()/2) + mineFild.getGrid()[i][j].getY() + j,
-                            radius: mineFild.getGrid()[i][j].getSize() / 5,
-                            sectors: 50,
-                            color: 'green',
-                            z: 0
-                        )
-                    else
+                    if !mineFild.getGrid()[i][j].getMina()
                         Square.new(
                             x: mineFild.getGrid()[i][j].getX() + i, y: mineFild.getGrid()[i][j].getY() + j,
                             size: mineFild.getGrid()[i][j].getSize(),
                             color: 'blue',
                             z: 0 
                         )
-
+            
                         if mineFild.getGrid()[i][j].getQuantidadeMinas() > 0
                             Text.new(
                                 String(mineFild.getGrid()[i][j].getQuantidadeMinas()),
@@ -53,9 +43,23 @@ class Display
                                 rotate: 0,
                                 z: 0
                             )
+                        else
+                            for cell in mineFild.getGrid[i][j].getArrayDeVizinhos() do
+                               if cell.getQuantidadeMinas == 0
+                                  cell.setStatus(true)
+                               end
+                            end
                         end
-                        
-
+                    else
+                        Circle.new(
+                            x: (mineFild.getGrid()[i][j].getSize()/2) + mineFild.getGrid()[i][j].getX() + i, 
+                            y: (mineFild.getGrid()[i][j].getSize()/2) + mineFild.getGrid()[i][j].getY() + j,
+                            radius: mineFild.getGrid()[i][j].getSize() / 5,
+                            sectors: 50,
+                            color: 'green',
+                            z: 0
+                        )
+                        lose(mineFild.getGrid())
                     end
                 end
                 j += 1
@@ -74,33 +78,24 @@ class Display
             end
         end
     end
-
-    def final(grid)
-        for arr in grid do
-            for cell in arr do
-                if (cell.getMina() and cell.getStatus())
-                    lose(grid)
-                end
-            end
-        end
-    end
+    
 
     def lose(grid)
-        Window.set title: "You lose!"
-        i = 0
-        grid.getColunas().times do
-            j = 0
-            grid.getLinhas().times do
-                grid[i][j].setStatus(true)
-                j += 1
+        Text.new(
+            'You Lose!',
+            x: 100, y: 200,
+            style: 'bold',
+            size: 50,
+            color: 'red',
+            rotate: 0,
+            z: 0
+        )
+        
+        for arr in grid do
+            for cell in arr do
+                cell.setStatus(true)
             end
-            i += 1
         end
-        k = 500
-        k.times do
-            displayCelulas(grid)
-        end
-        return
     end
     
 
@@ -181,7 +176,6 @@ update do
     
         when :left
             display.mousePressionado(mineFild.getGrid(), event.x, event.y)
-            # display.final(mineFild.getGrid())
         when :right
 
     end
