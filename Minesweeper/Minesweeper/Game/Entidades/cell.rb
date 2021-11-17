@@ -2,11 +2,12 @@ require 'ruby2d'
 
 # Entidade célula do campo minado
 class Celula
-    attr_accessor :mina, :revelado, :x, :y, :i, :j, :size, :quantidadeMinas, :arrayDeVizinhos     
+    attr_accessor :mina, :revelado, :x, :y, :i, :j, :size, :cor, :quantidadeMinas, :arrayDeVizinhos     
     
     def initialize(i, j, size)
         @mina = true
         @revelado = false
+        @cor = "black"
         @i = i
         @j = j
         @size = size
@@ -53,6 +54,10 @@ class Celula
     def setarVizinhos(cell)
        self.arrayDeVizinhos().push(cell)
     end
+
+    def setCor(valor)
+        self.cor = valor
+    end
     
     def getI()
         return self.i
@@ -89,6 +94,9 @@ class Celula
     def getArrayDeVizinhos()
         return self.arrayDeVizinhos
     end
-    
+
+    def getCor()
+        return self.cor
+    end
 
 end

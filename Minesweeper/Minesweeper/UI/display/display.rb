@@ -17,49 +17,58 @@ class Display
         mineFild.getLinhas().times do
             j = 0
             mineFild.getColunas().times do
-                s = Square.new(
-                    x: mineFild.getGrid()[i][j].getX() + i, y: mineFild.getGrid()[i][j].getY() + j,
-                    size: mineFild.getGrid()[i][j].getSize(),
-                    color: 'black',
-                    z: 0 
-                )
-                if mineFild.getGrid()[i][j].getStatus()
-                    if !mineFild.getGrid()[i][j].getMina()
-                        Square.new(
-                            x: mineFild.getGrid()[i][j].getX() + i, y: mineFild.getGrid()[i][j].getY() + j,
-                            size: mineFild.getGrid()[i][j].getSize(),
-                            color: 'blue',
-                            z: 0 
-                        )
-            
-                        if mineFild.getGrid()[i][j].getQuantidadeMinas() > 0
-                            Text.new(
-                                String(mineFild.getGrid()[i][j].getQuantidadeMinas()),
-                                x: (mineFild.getGrid()[i][j].getSize()/3) + mineFild.getGrid()[i][j].getX() + i, 
-                                y: (mineFild.getGrid()[i][j].getSize()/4) + mineFild.getGrid()[i][j].getY() + j,
-                                style: 'bold',
-                                size: mineFild.getGrid()[i][j].getSize() / 2,
-                                color: 'black',
-                                rotate: 0,
+                if (mineFild.getGrid()[i][j].getCor() == "red")
+                    s = Square.new(
+                        x: mineFild.getGrid()[i][j].getX() + i, y: mineFild.getGrid()[i][j].getY() + j,
+                        size: mineFild.getGrid()[i][j].getSize(),
+                        color: 'red',
+                        z: 0 
+                    )
+                elsif (mineFild.getGrid()[i][j].getCor() == "black")
+                    s = Square.new(
+                        x: mineFild.getGrid()[i][j].getX() + i, y: mineFild.getGrid()[i][j].getY() + j,
+                        size: mineFild.getGrid()[i][j].getSize(),
+                        color: 'black',
+                        z: 0 
+                    )
+                    if mineFild.getGrid()[i][j].getStatus()
+                        if !mineFild.getGrid()[i][j].getMina()
+                            Square.new(
+                                x: mineFild.getGrid()[i][j].getX() + i, y: mineFild.getGrid()[i][j].getY() + j,
+                                size: mineFild.getGrid()[i][j].getSize(),
+                                color: 'blue',
+                                z: 0 
+                            )
+                
+                            if mineFild.getGrid()[i][j].getQuantidadeMinas() > 0
+                                Text.new(
+                                    String(mineFild.getGrid()[i][j].getQuantidadeMinas()),
+                                    x: (mineFild.getGrid()[i][j].getSize()/3) + mineFild.getGrid()[i][j].getX() + i, 
+                                    y: (mineFild.getGrid()[i][j].getSize()/4) + mineFild.getGrid()[i][j].getY() + j,
+                                    style: 'bold',
+                                    size: mineFild.getGrid()[i][j].getSize() / 2,
+                                    color: 'black',
+                                    rotate: 0,
+                                    z: 0
+                                )
+                            else
+                                for cell in mineFild.getGrid[i][j].getArrayDeVizinhos() do
+                                   if cell.getCor() != "red"
+                                      cell.setStatus(true)
+                                   end
+                                end
+                            end
+                        else
+                            Circle.new(
+                                x: (mineFild.getGrid()[i][j].getSize()/2) + mineFild.getGrid()[i][j].getX() + i, 
+                                y: (mineFild.getGrid()[i][j].getSize()/2) + mineFild.getGrid()[i][j].getY() + j,
+                                radius: mineFild.getGrid()[i][j].getSize() / 5,
+                                sectors: 50,
+                                color: 'green',
                                 z: 0
                             )
-                        else
-                            for cell in mineFild.getGrid[i][j].getArrayDeVizinhos() do
-                               if cell.getQuantidadeMinas == 0
-                                  cell.setStatus(true)
-                               end
-                            end
+                            lose(mineFild.getGrid())
                         end
-                    else
-                        Circle.new(
-                            x: (mineFild.getGrid()[i][j].getSize()/2) + mineFild.getGrid()[i][j].getX() + i, 
-                            y: (mineFild.getGrid()[i][j].getSize()/2) + mineFild.getGrid()[i][j].getY() + j,
-                            radius: mineFild.getGrid()[i][j].getSize() / 5,
-                            sectors: 50,
-                            color: 'green',
-                            z: 0
-                        )
-                        lose(mineFild.getGrid())
                     end
                 end
                 j += 1
@@ -69,16 +78,31 @@ class Display
 
     end
 
-    def mousePressionado(grid, event_x , event_y)
+    def mousePressionadoEsquerdo(grid, event_x , event_y)
         for arr in grid do
             for cell in arr do
                 if (cell.mouseCelulaStatus(event_x, event_y))
-                    cell.setStatus(true)
+                    if cell.getCor() == "black"
+                        cell.setStatus(true)
+                    end
                 end
             end
         end
     end
     
+    def mousePressionadoDireito(grid, event_x , event_y)
+        for arr in grid do
+            for cell in arr do
+                if (cell.mouseCelulaStatus(event_x, event_y))
+                    if cell.getCor() == "black" and !cell.getStatus()
+                        cell.setCor("red")
+                    else
+                        cell.setCor("black")
+                    end
+                end
+            end
+        end
+    end
 
     def lose(grid)
         Text.new(
@@ -153,6 +177,8 @@ class Display
 
 end
 
+# teste
+
 display = Display.new(450, 450)
 
 # Setando a window e seu tamanho
@@ -175,9 +201,9 @@ update do
     case event.button
     
         when :left
-            display.mousePressionado(mineFild.getGrid(), event.x, event.y)
+            display.mousePressionadoEsquerdo(mineFild.getGrid(), event.x, event.y)
         when :right
-
+            display.mousePressionadoDireito(mineFild.getGrid(), event.x, event.y)
     end
 
   end
