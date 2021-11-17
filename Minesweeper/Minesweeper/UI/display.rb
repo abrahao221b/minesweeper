@@ -3,13 +3,14 @@ require_relative 'D:\Projetos Com Ruby\Minesweeper\Minesweeper\Game\Entidades\mi
 
 class Display
 
-    attr_accessor :altura, :largura, :background, :tituloTela, :tituloJogo, :cells
+    attr_accessor :altura, :largura, :background, :tituloTela, :tituloJogo, :houveEvent
     
     def initialize(altura, largura)
         @altura = altura
         @largura = largura
         @tituloTela = 'Game'
         @tituloJogo = 'Campo Minado'
+        @houveEvent = false
     end
 
     def displayCelulas(mineFild)
@@ -53,7 +54,7 @@ class Display
                                 )
                             else
                                 for cell in mineFild.getGrid[i][j].getArrayDeVizinhos() do
-                                   if cell.getCor() != "red"
+                                   if !cell.getMina() and cell.getCor() == "black"  
                                       cell.setStatus(true)
                                    end
                                 end
@@ -84,6 +85,7 @@ class Display
                 if (cell.mouseCelulaStatus(event_x, event_y))
                     if (cell.getCor() == "black")
                         cell.setStatus(true)
+                        return true
                     end
                 end
             end
@@ -94,14 +96,17 @@ class Display
         for arr in mineFild.getGrid() do
             for cell in arr do
                 if (cell.mouseCelulaStatus(event_x, event_y))
-                    if (cell.getCor() == "black" and !cell.getStatus())
+                    if cell.getCor() == "black" and !cell.getStatus()
                         cell.setCor("red")
-                    else
+                        return true
+                    else 
                         cell.setCor("black")
+                        return true
                     end
                 end
             end
         end
+        return true
     end
 
     def lose(grid)
@@ -153,7 +158,14 @@ class Display
             z: 0
         )
     end
-    
+
+    def setHouveEvent(valor)
+        self.houveEvent = valor
+    end
+
+    def getHouveEvent()
+        return self.houveEvent
+    end
 
     def getLargura()
         return self.altura
@@ -177,7 +189,7 @@ class Display
 
 end
 
-# # teste
+# teste
 
 display = Display.new(450, 450)
 
@@ -197,17 +209,21 @@ mineFild.radarDeMinas()
 display.lineDisplay()
 display.displayCelulas(mineFild)
 
-update do
-  puts Window.get(:fps)  
-  on :mouse do |event|
+on :mouse_down do |event|
     case event.button
         when :left
-            display.mousePressionadoEsquerdo(mineFild, event.x, event.y)
+            display.setHouveEvent(display.mousePressionadoEsquerdo(mineFild, event.x, event.y))
         when :right
-            display.mousePressionadoDireito(mineFild, event.x, event.y)
+            display.setHouveEvent(display.mousePressionadoDireito(mineFild, event.x, event.y))
     end
-  end
-  display.displayCelulas(mineFild)
+end
+
+update do
+  puts Window.get(:fps)
+  if display.getHouveEvent()
+    display.displayCelulas(mineFild)
+    display.setHouveEvent(false)
+  end 
 end
 
 Window.show 

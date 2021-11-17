@@ -1,23 +1,14 @@
 require 'ruby2d'
 require_relative 'D:\Projetos Com Ruby\Minesweeper\Minesweeper\Game\Entidades\minefild.rb'
-require_relative 'D:\Projetos Com Ruby\Minesweeper\Minesweeper\UI\display.rb'
+require_relative 'D:\Projetos Com Ruby\\Minesweeper\Minesweeper\UI\display.rb'
 
 def setup()
-    tools = Array[]
     
     display = Display.new(450, 450) 
     mineFild = CampoMinado.new(400, 400)
     mineFild.verificaVizinhos()
     mineFild.radarDeMinas()
 
-    tools[0] = display
-    tools[1] = mineFild
-    
-    return tools
-
-end
-
-def draw(display, mineFild)
     # Setando a window e seu tamanho
     Window.set width: display.getLargura, height: display.getLargura()
 
@@ -25,32 +16,41 @@ def draw(display, mineFild)
 
     # Colocando o título da tela
     Window.set title: display.getTituloJogo()
-    
+
     display.lineDisplay()
 
     display.displayCelulas(mineFild)
 
-    # Loop da tela
-    update do
-    on :mouse do |event|
+
+    on :mouse_down do |event|
         case event.button
-        
             when :left
-                display.mousePressionadoEsquerdo(mineFild, event.x, event.y)
+                display.setHouveEvent(display.mousePressionadoEsquerdo(mineFild, event.x, event.y))
             when :right
-                display.mousePressionadoDireito(mineFild, event.x, event.y)
+                display.setHouveEvent(display.mousePressionadoDireito(mineFild, event.x, event.y))
         end
     end
-    display.displayCelulas(mineFild)
+
+    # Loop da tela
+    update do
+        if (display.getHouveEvent())
+            display.displayCelulas(mineFild)
+            display.setHouveEvent(false)
+        end 
     end
 
-    Window.show 
+    Window.show
 end
 
-ferramentas = setup()
 
-draw(ferramentas[0], ferramentas[1])
+def play()
+    begin
+        setup()
+    rescue => exception
+        puts exception
+    end
+end
 
 
-
+play()
 
