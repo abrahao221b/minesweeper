@@ -29,7 +29,6 @@ class Celula
         self.revelado = valor
     end
     
-
     # Diz qual é o estado do mouse em relação a cada célula
     def mouseCelulaStatus(x, y)
         return (x > self.x and x < self.x + self.size and y > self.y and y < self.y + self.size)

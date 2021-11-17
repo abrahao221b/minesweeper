@@ -30,6 +30,7 @@ def draw(display, mineFild)
 
     display.displayCelulas(mineFild)
 
+    # Loop da tela
     update do
     on :mouse do |event|
         case event.button

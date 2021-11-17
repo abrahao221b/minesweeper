@@ -82,7 +82,7 @@ class Display
         for arr in mineFild.getGrid() do
             for cell in arr do
                 if (cell.mouseCelulaStatus(event_x, event_y))
-                    if cell.getCor() == "black"
+                    if (cell.getCor() == "black")
                         cell.setStatus(true)
                     end
                 end
@@ -94,7 +94,7 @@ class Display
         for arr in mineFild.getGrid() do
             for cell in arr do
                 if (cell.mouseCelulaStatus(event_x, event_y))
-                    if cell.getCor() == "black" and !cell.getStatus()
+                    if (cell.getCor() == "black" and !cell.getStatus())
                         cell.setCor("red")
                     else
                         cell.setCor("black")
@@ -110,7 +110,7 @@ class Display
             x: 100, y: 200,
             style: 'bold',
             size: 50,
-            color: 'red',
+            color: 'yellow',
             rotate: 0,
             z: 0
         )
@@ -179,33 +179,35 @@ end
 
 # # teste
 
-# display = Display.new(450, 450)
+display = Display.new(450, 450)
 
-# # Setando a window e seu tamanho
-# Window.set width: display.getLargura, height: display.getLargura()
+# Setando a window e seu tamanho
+Window.set width: display.getLargura, height: display.getLargura()
 
-# Window.set background: 'white'
+Window.set background: 'white'
 
-# # Colocando o título da tela
-# Window.set title: display.getTituloJogo()
+# Colocando o título da tela
+Window.set title: display.getTituloJogo()
 
 
-# mineFild = CampoMinado.new(400, 400)
-# mineFild.verificaVizinhos()
-# mineFild.radarDeMinas()
-# display.lineDisplay()
-# display.displayCelulas(mineFild)
 
-# update do
-#   on :mouse do |event|
-#     case event.button
-#         when :left
-#             display.mousePressionadoEsquerdo(mineFild, event.x, event.y)
-#         when :right
-#             display.mousePressionadoDireito(mineFild, event.x, event.y)
-#     end
-#   end
-#   display.displayCelulas(mineFild)
-# end
+mineFild = CampoMinado.new(400, 400)
+mineFild.verificaVizinhos()
+mineFild.radarDeMinas()
+display.lineDisplay()
+display.displayCelulas(mineFild)
 
-# Window.show 
+update do
+  puts Window.get(:fps)  
+  on :mouse do |event|
+    case event.button
+        when :left
+            display.mousePressionadoEsquerdo(mineFild, event.x, event.y)
+        when :right
+            display.mousePressionadoDireito(mineFild, event.x, event.y)
+    end
+  end
+  display.displayCelulas(mineFild)
+end
+
+Window.show 

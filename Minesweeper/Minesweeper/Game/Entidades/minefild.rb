@@ -67,29 +67,32 @@ class CampoMinado
 
     # Conta o número de minas ao redor
     def radarDeMinas()
-        
-        k = 0
-        self.linhas.times do
-            w = 0 
-            self.colunas.times do
-                if(self.grid[k][w].getMina()) 
-                    self.grid[k][w].setQuantidadeMinas(-1) 
+        for arr in self.grid do
+            for cell in arr do
+                if(cell.getMina()) 
+                    cell.setQuantidadeMinas(-1) 
                 end
                 total = 0
-                for i in self.grid[k][w].getArrayDeVizinhos() do
+                for i in cell.getArrayDeVizinhos() do
                     if i.getMina() 
                         total += 1
                     end
                 end
-                self.grid[k][w].setQuantidadeMinas(total)
-                w += 1                
-            end
-            k += 1
+                cell.setQuantidadeMinas(total)
+            end    
         end
+    end
 
+    def findCell(x, y)
+        for arr in self.grid do
+            for cell in arr do
+                if cell.getX() == x and cell.getY() == y
+                    return cell
+                end
+            end
+        end
     end
     
-
     def getColunas()
         return self.colunas
     end
