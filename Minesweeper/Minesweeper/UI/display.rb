@@ -189,41 +189,41 @@ class Display
 
 end
 
-# teste
+# # teste
 
-display = Display.new(450, 450)
+# display = Display.new(450, 450)
 
-# Setando a window e seu tamanho
-Window.set width: display.getLargura, height: display.getLargura()
+# # Setando a window e seu tamanho
+# Window.set width: display.getLargura, height: display.getLargura()
 
-Window.set background: 'white'
+# Window.set background: 'white'
 
-# Colocando o título da tela
-Window.set title: display.getTituloJogo()
+# # Colocando o título da tela
+# Window.set title: display.getTituloJogo()
 
 
 
-mineFild = CampoMinado.new(400, 400)
-mineFild.verificaVizinhos()
-mineFild.radarDeMinas()
-display.lineDisplay()
-display.displayCelulas(mineFild)
+# mineFild = CampoMinado.new(400, 400)
+# mineFild.verificaVizinhos()
+# mineFild.radarDeMinas()
+# display.lineDisplay()
+# display.displayCelulas(mineFild)
 
-on :mouse_down do |event|
-    case event.button
-        when :left
-            display.setHouveEvent(display.mousePressionadoEsquerdo(mineFild, event.x, event.y))
-        when :right
-            display.setHouveEvent(display.mousePressionadoDireito(mineFild, event.x, event.y))
-    end
-end
+# on :mouse_down do |event|
+#     case event.button
+#         when :left
+#             display.setHouveEvent(display.mousePressionadoEsquerdo(mineFild, event.x, event.y))
+#         when :right
+#             display.setHouveEvent(display.mousePressionadoDireito(mineFild, event.x, event.y))
+#     end
+# end
 
-update do
-  puts Window.get(:fps)
-  if display.getHouveEvent()
-    display.displayCelulas(mineFild)
-    display.setHouveEvent(false)
-  end 
-end
+# update do
+#   puts Window.get(:fps)
+#   if display.getHouveEvent()
+#     display.displayCelulas(mineFild)
+#     display.setHouveEvent(false)
+#   end 
+# end
 
-Window.show 
+# Window.show 
