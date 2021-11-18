@@ -3,11 +3,9 @@ require_relative 'D:\Projetos Com Ruby\Minesweeper\Minesweeper\Game\Entidades\mi
 require_relative 'D:\Projetos Com Ruby\\Minesweeper\Minesweeper\UI\display.rb'
 
 def setup()
-    
-    display = Display.new(450, 450) 
-    mineFild = CampoMinado.new(400, 400)
-    mineFild.verificaVizinhos()
-    mineFild.radarDeMinas()
+
+    # Craindo o display
+    display = Display.new(450, 450)
 
     # Setando a window e seu tamanho
     Window.set width: display.getLargura, height: display.getLargura()
@@ -17,11 +15,19 @@ def setup()
     # Colocando o título da tela
     Window.set title: display.getTituloJogo()
 
+
+    # Criando o campo
+    mineFild = CampoMinado.new(400, 400)
+    mineFild.verificaVizinhos()
+    mineFild.radarDeMinas()
+
+    # Criando o limite do campo
     display.lineDisplay()
 
+    # Desenhando o campo minado
     display.displayCelulas(mineFild)
 
-
+    # Loop que pega os eventos do mouse 
     on :mouse_down do |event|
         case event.button
             when :left
@@ -31,15 +37,19 @@ def setup()
         end
     end
 
-    # Loop da tela
+    # Loop que atualiza o a tela
     update do
-        if (display.getHouveEvent())
+        if display.getHouveEvent()
             display.displayCelulas(mineFild)
-            display.setHouveEvent(false)
+            if !display.getFinal()
+                display.setHouveEvent(false)
+            end
+            display.win(mineFild.getGrid())
         end 
     end
 
-    Window.show
+    # Apresentado a tela
+    Window.show 
 end
 
 

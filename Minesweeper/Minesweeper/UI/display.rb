@@ -3,7 +3,7 @@ require_relative 'D:\Projetos Com Ruby\Minesweeper\Minesweeper\Game\Entidades\mi
 
 class Display
 
-    attr_accessor :altura, :largura, :background, :tituloTela, :tituloJogo, :houveEvent
+    attr_accessor :altura, :largura, :background, :tituloTela, :tituloJogo, :houveEvent, :final
     
     def initialize(altura, largura)
         @altura = altura
@@ -11,6 +11,7 @@ class Display
         @tituloTela = 'Game'
         @tituloJogo = 'Campo Minado'
         @houveEvent = false
+        @final = false
     end
 
     def displayCelulas(mineFild)
@@ -125,6 +126,41 @@ class Display
                 cell.setStatus(true)
             end
         end
+
+        self.final = true
+    end
+
+    def win(grid)
+        minasDesativadas = 0
+        celulasDescobertas = 0
+        
+        for arr in grid do
+            for cell in arr do
+                if cell.getMina()
+                    if cell.getCor() == "red"
+                        minasDesativadas += 1
+                    end                    
+                else
+                    if cell.getStatus() == true
+                        celulasDescobertas += 1
+                    end
+                end
+            end
+        end
+
+        if minasDesativadas + celulasDescobertas == 100
+            Text.new(
+                'You Win!',
+                x: 100, y: 200,
+                style: 'bold',
+                size: 50,
+                color: 'green',
+                rotate: 0,
+                z: 0
+            )
+            self.final = true
+        end
+        
     end
     
 
@@ -167,6 +203,10 @@ class Display
         return self.houveEvent
     end
 
+    def getFinal()
+        return self.final
+    end
+
     def getLargura()
         return self.altura
     end
@@ -189,7 +229,7 @@ class Display
 
 end
 
-# # teste
+# teste
 
 # display = Display.new(450, 450)
 
@@ -222,7 +262,10 @@ end
 #   puts Window.get(:fps)
 #   if display.getHouveEvent()
 #     display.displayCelulas(mineFild)
-#     display.setHouveEvent(false)
+#     if !display.getFinal()
+#         display.setHouveEvent(false)
+#     end
+#     display.win(mineFild.getGrid())
 #   end 
 # end
 
