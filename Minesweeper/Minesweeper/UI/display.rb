@@ -20,11 +20,14 @@ class Display
             j = 0
             mineFild.getColunas().times do
                 if (mineFild.getGrid()[i][j].getCor() == "red")
-                    s = Square.new(
-                        x: mineFild.getGrid()[i][j].getX() + i, y: mineFild.getGrid()[i][j].getY() + j,
-                        size: mineFild.getGrid()[i][j].getSize(),
-                        color: 'red',
-                        z: 0 
+                    Image.new(
+                        'D:\Projetos Com Ruby\Minesweeper\Minesweeper\Dados\flag.png',
+                        x: (mineFild.getGrid()[i][j].getSize()/4) + mineFild.getGrid()[i][j].getX(), 
+                        y: (mineFild.getGrid()[i][j].getSize()/4) + mineFild.getGrid()[i][j].getY(),
+                        width: 30, height: 30,
+                        color: [1.0, 1.0, 1.0, 1.0],
+                        rotate: 0,
+                        z: 0
                     )
                 elsif (mineFild.getGrid()[i][j].getCor() == "black")
                     s = Square.new(
@@ -61,14 +64,19 @@ class Display
                                 end
                             end
                         else
-                            Circle.new(
-                                x: (mineFild.getGrid()[i][j].getSize()/2) + mineFild.getGrid()[i][j].getX() + i, 
-                                y: (mineFild.getGrid()[i][j].getSize()/2) + mineFild.getGrid()[i][j].getY() + j,
-                                radius: mineFild.getGrid()[i][j].getSize() / 5,
-                                sectors: 50,
-                                color: 'green',
-                                z: 0
+                            bomb = Sprite.new(
+                                'D:\Projetos Com Ruby\Minesweeper\Minesweeper\Dados\bomoSpriteNew.png',
+                                x: (mineFild.getGrid()[i][j].getSize()/4) + mineFild.getGrid()[i][j].getX() + i, 
+                                y: (mineFild.getGrid()[i][j].getSize()/4) + mineFild.getGrid()[i][j].getY() + j,
+                                width: 20,
+                                height: 20,
+                                rotate: 90,
+                                clip_width: 200,
+                                time: 25,
+                                loop: true,
+                                z: 1
                             )
+                            bomb.play
                             lose(mineFild.getGrid())
                         end
                     end
@@ -118,7 +126,7 @@ class Display
             size: 50,
             color: 'yellow',
             rotate: 0,
-            z: 0
+            z: 1
         )
         
         for arr in grid do

@@ -46,6 +46,9 @@ def setup()
             end
             display.win(mineFild.getGrid())
         end 
+        if Window.get(:fps) < 10
+            Window.close()
+        end
     end
 
     # Apresentado a tela
