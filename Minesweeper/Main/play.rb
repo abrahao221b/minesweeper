@@ -1,10 +1,9 @@
 require 'ruby2d'
 require_relative 'D:\Projetos Com Ruby\Minesweeper\Minesweeper\Game\Entidades\minefild.rb'
-require_relative 'D:\Projetos Com Ruby\\Minesweeper\Minesweeper\UI\display.rb'
+require_relative 'D:\Projetos Com Ruby\MinesweeperTestes\Minesweeper\Minesweeper\UI\display.rb'
 
 def setup()
 
-    # Craindo o display
     display = Display.new(450, 450)
 
     # Setando a window e seu tamanho
@@ -17,42 +16,35 @@ def setup()
 
 
     # Criando o campo
-    mineFild = CampoMinado.new(400, 400)
-    mineFild.verificaVizinhos()
-    mineFild.radarDeMinas()
+    mineField = CampoMinado.new(400, 400)
+    mineField.verificaVizinhos()
+    mineField.radarDeMinas()
 
-    # Criando o limite do campo
+    # Construindo os limites do campo
     display.lineDisplay()
 
     # Desenhando o campo minado
-    display.displayCelulas(mineFild)
+    display.displayCelulas(mineField)
 
-    # Loop que pega os eventos do mouse 
+    # Loop que captura os eventos do mouse
     on :mouse_down do |event|
-        case event.button
+        if !display.getEnd()
+            case event.button
             when :left
-                display.setHouveEvent(display.mousePressionadoEsquerdo(mineFild, event.x, event.y))
+                display.mousePressionadoEsquerdo(mineField, event.x, event.y)
             when :right
-                display.setHouveEvent(display.mousePressionadoDireito(mineFild, event.x, event.y))
-        end
-    end
-
-    # Loop que atualiza o a tela
-    update do
-        if display.getHouveEvent()
-            display.displayCelulas(mineFild)
-            if !display.getFinal()
-                display.setHouveEvent(false)
+                display.mousePressionadoDireito(mineField, event.x, event.y)
             end
-            display.win(mineFild.getGrid())
         end 
-        if Window.get(:fps) < 10
-            Window.close()
-        end
     end
 
-    # Apresentado a tela
+    # Loop que atualizando a tela
+    update do
+        display.win(mineField)
+    end
+
     Window.show 
+
 end
 
 

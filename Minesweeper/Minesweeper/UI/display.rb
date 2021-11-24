@@ -1,124 +1,202 @@
 require 'ruby2d'
-require_relative 'D:\Projetos Com Ruby\Minesweeper\Minesweeper\Game\Entidades\minefild.rb'
+require 'ostruct'
+require_relative 'D:\Projetos Com Ruby\MinesweeperTestes\Minesweeper\Minesweeper\Game\Entidades\minefield.rb'
 
 class Display
 
-    attr_accessor :altura, :largura, :background, :tituloTela, :tituloJogo, :houveEvent, :final
+    attr_accessor :altura, :largura, :background, :tituloTela, :tituloJogo, :end
     
     def initialize(altura, largura)
         @altura = altura
         @largura = largura
         @tituloTela = 'Game'
         @tituloJogo = 'Campo Minado'
-        @houveEvent = false
-        @final = false
+        @end = false
     end
 
-    def displayCelulas(mineFild)
-        i = 0
-        mineFild.getLinhas().times do
-            j = 0
-            mineFild.getColunas().times do
-                if (mineFild.getGrid()[i][j].getCor() == "red")
-                    Image.new(
-                        'D:\Projetos Com Ruby\Minesweeper\Minesweeper\Dados\flag.png',
-                        x: (mineFild.getGrid()[i][j].getSize()/4) + mineFild.getGrid()[i][j].getX(), 
-                        y: (mineFild.getGrid()[i][j].getSize()/4) + mineFild.getGrid()[i][j].getY(),
-                        width: 30, height: 30,
-                        color: [1.0, 1.0, 1.0, 1.0],
-                        rotate: 0,
-                        z: 0
-                    )
-                elsif (mineFild.getGrid()[i][j].getCor() == "black")
-                    s = Square.new(
-                        x: mineFild.getGrid()[i][j].getX() + i, y: mineFild.getGrid()[i][j].getY() + j,
-                        size: mineFild.getGrid()[i][j].getSize(),
-                        color: 'black',
-                        z: 0 
-                    )
-                    if mineFild.getGrid()[i][j].getStatus()
-                        if !mineFild.getGrid()[i][j].getMina()
-                            Square.new(
-                                x: mineFild.getGrid()[i][j].getX() + i, y: mineFild.getGrid()[i][j].getY() + j,
-                                size: mineFild.getGrid()[i][j].getSize(),
-                                color: 'blue',
-                                z: 0 
-                            )
+    def displayCelulas(mineField)
+        for arr in mineField.getGrid() do
+            for cell in arr do
+                printarCorPreta(mineField, cell.getI(), cell.getJ())
+            end
+        end
+    end
+
+    def atualizarCampo(mineField, row, column)
+        if (mineField.getGrid[row][column].getCor() == "black")
+            if !mineField.getGrid[row][column].getMina() 
+                mineField.setCelulasDescobertas(mineField.getCelulasDescobertas() + 1)
+                printarCorAzul(mineField, row, column)
+                mineField.getGrid[row][column].setCor("blue")
                 
-                            if mineFild.getGrid()[i][j].getQuantidadeMinas() > 0
-                                Text.new(
-                                    String(mineFild.getGrid()[i][j].getQuantidadeMinas()),
-                                    x: (mineFild.getGrid()[i][j].getSize()/3) + mineFild.getGrid()[i][j].getX() + i, 
-                                    y: (mineFild.getGrid()[i][j].getSize()/4) + mineFild.getGrid()[i][j].getY() + j,
-                                    style: 'bold',
-                                    size: mineFild.getGrid()[i][j].getSize() / 2,
-                                    color: 'black',
-                                    rotate: 0,
-                                    z: 0
-                                )
-                            else
-                                for cell in mineFild.getGrid[i][j].getArrayDeVizinhos() do
-                                   if !cell.getMina() and cell.getCor() == "black"  
-                                      cell.setStatus(true)
-                                   end
-                                end
-                            end
-                        else
-                            bomb = Sprite.new(
-                                'D:\Projetos Com Ruby\Minesweeper\Minesweeper\Dados\bomoSpriteNew.png',
-                                x: (mineFild.getGrid()[i][j].getSize()/4) + mineFild.getGrid()[i][j].getX() + i, 
-                                y: (mineFild.getGrid()[i][j].getSize()/4) + mineFild.getGrid()[i][j].getY() + j,
-                                width: 20,
-                                height: 20,
-                                rotate: 90,
-                                clip_width: 200,
-                                time: 25,
-                                loop: true,
-                                z: 1
-                            )
-                            bomb.play
-                            lose(mineFild.getGrid())
+                if mineField.getGrid[row][column].getQuantidadeMinas() > 0
+                    printarNumeroBombas(mineField, row, column)
+                else
+                    pairVector = especialCase(mineField.getGrid[row][column], mineField)
+                    for i in pairVector do
+                        mineField.setCelulasDescobertas(mineField.getCelulasDescobertas() + 1)
+                        mineField.getGrid[i[0]][i[1]].setCor("blue")
+                        printarCorAzul(mineField, i[0], i[1])
+                        if mineField.getGrid[i[0]][i[1]].getQuantidadeMinas() > 0
+                          printarNumeroBombas(mineField, i[0], i[1])
                         end
                     end
                 end
-                j += 1
+            else
+                loose(mineField)
             end
-            i += 1
         end
-
     end
 
-    def mousePressionadoEsquerdo(mineFild, event_x , event_y)
-        for arr in mineFild.getGrid() do
+    def printarCorPreta(mineField, row, column)
+        s = Square.new(
+            x: mineField.getGrid[row][column].getX() + mineField.getGrid[row][column].getI(), 
+            y: mineField.getGrid[row][column].getY() + mineField.getGrid[row][column].getJ(),
+            size: mineField.getGrid[row][column].getSize(),
+            color: 'black',
+            z: 0
+        )
+    end
+    
+    
+    def printarCorVermelha(mineField, row, column)
+        Image.new(
+            'D:\Projetos Com Ruby\MinesweeperTestes\Minesweeper\Minesweeper\Dados\flag.png',
+            x: (mineField.getGrid[row][column].getSize()/4) + mineField.getGrid[row][column].getX(), 
+            y: (mineField.getGrid[row][column].getSize()/4) + mineField.getGrid[row][column].getY(),
+            width: 30, height: 30,
+            color: [1.0, 1.0, 1.0, 1.0],
+            rotate: 0,
+            z: 0
+        )
+    end
+
+    def printarCorAzul(mineField, row, column)
+        Square.new(
+            x: mineField.getGrid[row][column].getX() + mineField.getGrid[row][column].getI(), 
+            y: mineField.getGrid[row][column].getY() + mineField.getGrid[row][column].getJ(),
+            size: mineField.getGrid[row][column].getSize(),
+            color: 'blue',
+            z: 0 
+        )
+    end
+    
+    def printarNumeroBombas(mineField, row, column)
+        Text.new(
+            String(mineField.getGrid[row][column].getQuantidadeMinas()),
+            x: (mineField.getGrid[row][column].getSize()/3) + mineField.getGrid[row][column].getX() + mineField.getGrid[row][column].getI(), 
+            y: (mineField.getGrid[row][column].getSize()/4) + mineField.getGrid[row][column].getY() + mineField.getGrid[row][column].getJ(),
+            style: 'bold',
+            size: mineField.getGrid[row][column].getSize() / 2,
+            color: 'black',
+            rotate: 0,
+            z: 0
+        )
+    end
+    
+    def printarBomba(mineField, row, column)
+        Square.new(
+            x: mineField.getGrid[row][column].getX() + mineField.getGrid[row][column].getI(), 
+            y: mineField.getGrid[row][column].getY() + mineField.getGrid[row][column].getJ(),
+            size: mineField.getGrid[row][column].getSize(),
+            color: 'green',
+            z: 0 
+        )
+        bomb = Sprite.new(
+            'D:\Projetos Com Ruby\MinesweeperTestes\Minesweeper\Minesweeper\Dados\bomoSpriteNew.png',
+            x: (mineField.getGrid[row][column].getSize()/4) + mineField.getGrid[row][column].getX() + mineField.getGrid[row][column].getI(), 
+            y: (mineField.getGrid[row][column].getSize()/4) + mineField.getGrid[row][column].getY() + mineField.getGrid[row][column].getJ(),
+            width: 20,
+            height: 20,
+            rotate: 90,
+            clip_width: 80,
+            time: 30,
+            loop: true,
+            z: 0
+        )
+        bomb.play
+    end
+    
+
+    def mousePressionadoEsquerdo(mineField, event_x , event_y)
+        for arr in mineField.getGrid() do
             for cell in arr do
                 if (cell.mouseCelulaStatus(event_x, event_y))
-                    if (cell.getCor() == "black")
-                        cell.setStatus(true)
-                        return true
+                    if cell.getCor() == "black"
+                        atualizarCampo(mineField, cell.getI(), cell.getJ())
                     end
                 end
             end
         end
     end
     
-    def mousePressionadoDireito(mineFild, event_x , event_y)
-        for arr in mineFild.getGrid() do
+    def mousePressionadoDireito(mineField, event_x , event_y)
+        for arr in mineField.getGrid() do
             for cell in arr do
                 if (cell.mouseCelulaStatus(event_x, event_y))
-                    if cell.getCor() == "black" and !cell.getStatus()
+                    if cell.getCor() == "black"
+                        if cell.getMina()
+                            mineField.setCelulasDescobertas(mineField.getCelulasDescobertas() + 1) 
+                        end
                         cell.setCor("red")
-                        return true
-                    else 
+                        printarCorVermelha(mineField, cell.getI(), cell.getJ())
+                    elsif cell.getCor() == "red"
+                        if cell.getMina()
+                            mineField.setCelulasDescobertas(mineField.getCelulasDescobertas() - 1)
+                        end
                         cell.setCor("black")
-                        return true
+                        printarCorPreta(mineField, cell.getI(), cell.getJ())
+                    end
+                end
+            end
+        end 
+    end
+
+    # Caso especial celula com nenhuma bomba ao redor, usando BST (Binary Search Tree)
+    def especialCase(cell, mineField)
+        
+        indexI = cell.getI()
+        indexJ = cell.getJ()
+
+        pair = OpenStruct.new
+        visitado = Array.new(10){Array.new(10)}
+        pairVector = Array[]
+        
+        list = Array[]
+       
+        for i in 0..9 do
+            for j in 0..9 do
+                visitado[i][j] = false
+            end
+        end
+        
+        visitado[indexI][indexJ] = true
+        pair = [indexI, indexJ]
+        list.push(pair)
+        pairVector.push(pair)
+        
+        while !list.empty?
+            pair = list.shift()
+            if !mineField.getGrid()[pair[0]][pair[1]].getMina()
+                pairVector.push(pair)
+                if mineField.getGrid()[pair[0]][pair[1]].getQuantidadeMinas() == 0
+                    neighbors = mineField.getGrid()[pair[0]][pair[1]].getArrayDeVizinhos()
+                    for i in neighbors do
+                        if visitado[i.getI()][i.getJ()] == false
+                            pair = [i.getI(), i.getJ()]
+                            list.push(pair)
+                            visitado[i.getI()][i.getJ()] = true 
+                        end
                     end
                 end
             end
         end
-        return true
+   
+        return pairVector
     end
+    
 
-    def lose(grid)
+    def loose(mineField)
         Text.new(
             'You Lose!',
             x: 100, y: 200,
@@ -129,34 +207,19 @@ class Display
             z: 1
         )
         
-        for arr in grid do
-            for cell in arr do
-                cell.setStatus(true)
-            end
-        end
-
-        self.final = true
-    end
-
-    def win(grid)
-        minasDesativadas = 0
-        celulasDescobertas = 0
-        
-        for arr in grid do
+        for arr in mineField.getGrid() do
             for cell in arr do
                 if cell.getMina()
-                    if cell.getCor() == "red"
-                        minasDesativadas += 1
-                    end                    
-                else
-                    if cell.getStatus() == true
-                        celulasDescobertas += 1
-                    end
+                   printarBomba(mineField, cell.getI(), cell.getJ()) 
                 end
             end
         end
+        self.end = true
+    end
 
-        if minasDesativadas + celulasDescobertas == 100
+    # Verifica se o jogador ganhou
+    def win(mineField)
+        if mineField.getCelulasDescobertas() == 100
             Text.new(
                 'You Win!',
                 x: 100, y: 200,
@@ -166,12 +229,11 @@ class Display
                 rotate: 0,
                 z: 0
             )
-            self.final = true
+            self.end = true
         end
-        
     end
     
-
+    # Printa os limites do campo
     def lineDisplay()
         Line.new(
             x1: 15, y1:30,
@@ -203,16 +265,12 @@ class Display
         )
     end
 
-    def setHouveEvent(valor)
-        self.houveEvent = valor
+    def getEspecialCase()
+        return self.especialCase
     end
-
-    def getHouveEvent()
-        return self.houveEvent
-    end
-
-    def getFinal()
-        return self.final
+    
+    def getEnd()
+        return self.end
     end
 
     def getLargura()
@@ -237,7 +295,7 @@ class Display
 
 end
 
-# teste
+# # teste
 
 # display = Display.new(450, 450)
 
@@ -251,30 +309,26 @@ end
 
 
 
-# mineFild = CampoMinado.new(400, 400)
-# mineFild.verificaVizinhos()
-# mineFild.radarDeMinas()
+# mineField = CampoMinado.new(400, 400)
+# mineField.verificaVizinhos()
+# mineField.radarDeMinas()
 # display.lineDisplay()
-# display.displayCelulas(mineFild)
+# display.displayCelulas(mineField)
 
 # on :mouse_down do |event|
-#     case event.button
+#     if !display.getEnd()
+#         case event.button
 #         when :left
-#             display.setHouveEvent(display.mousePressionadoEsquerdo(mineFild, event.x, event.y))
+#             display.mousePressionadoEsquerdo(mineField, event.x, event.y)
 #         when :right
-#             display.setHouveEvent(display.mousePressionadoDireito(mineFild, event.x, event.y))
-#     end
+#             display.mousePressionadoDireito(mineField, event.x, event.y)
+#         end
+#     end 
 # end
 
 # update do
 #   puts Window.get(:fps)
-#   if display.getHouveEvent()
-#     display.displayCelulas(mineFild)
-#     if !display.getFinal()
-#         display.setHouveEvent(false)
-#     end
-#     display.win(mineFild.getGrid())
-#   end 
+#   display.win(mineField)
 # end
 
 # Window.show 

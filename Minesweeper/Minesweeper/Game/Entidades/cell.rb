@@ -2,7 +2,7 @@ require 'ruby2d'
 
 # Entidade célula do campo minado
 class Celula
-    attr_accessor :mina, :revelado, :x, :y, :i, :j, :size, :cor, :quantidadeMinas, :arrayDeVizinhos     
+    attr_accessor :mina, :x, :y, :i, :j, :size, :cor, :quantidadeMinas, :arrayDeVizinhos     
     
     def initialize(i, j, size)
         @mina = true
@@ -23,10 +23,6 @@ class Celula
         else
             self.mina = false
         end        
-    end
-
-    def setStatus(valor)
-        self.revelado = valor
     end
     
     # Diz qual é o estado do mouse em relação a cada célula
@@ -76,10 +72,6 @@ class Celula
     
     def getMina()
         return self.mina
-    end
-
-    def getStatus()
-        return self.revelado
     end
 
     def getQuantidadeMinas()
