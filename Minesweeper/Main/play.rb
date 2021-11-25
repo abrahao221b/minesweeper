@@ -1,6 +1,6 @@
 require 'ruby2d'
-require_relative 'D:\Projetos Com Ruby\Minesweeper\Minesweeper\Game\Entidades\minefild.rb'
-require_relative 'D:\Projetos Com Ruby\MinesweeperTestes\Minesweeper\Minesweeper\UI\display.rb'
+require_relative 'D:\Projetos Com Ruby\Minesweeper\Minesweeper\Game\Entidades\minefield.rb'
+require_relative 'D:\Projetos Com Ruby\Minesweeper\Minesweeper\UI\display.rb'
 
 def setup()
 
@@ -58,4 +58,3 @@ end
 
 
 play()
-

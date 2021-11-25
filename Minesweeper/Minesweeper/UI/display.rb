@@ -1,6 +1,6 @@
 require 'ruby2d'
 require 'ostruct'
-require_relative 'D:\Projetos Com Ruby\MinesweeperTestes\Minesweeper\Minesweeper\Game\Entidades\minefield.rb'
+require_relative 'D:\Projetos Com Ruby\Minesweeper\Minesweeper\Game\Entidades\minefield.rb'
 
 class Display
 
@@ -25,17 +25,17 @@ class Display
     def atualizarCampo(mineField, row, column)
         if (mineField.getGrid[row][column].getCor() == "black")
             if !mineField.getGrid[row][column].getMina() 
-                mineField.setCelulasDescobertas(mineField.getCelulasDescobertas() + 1)
                 printarCorAzul(mineField, row, column)
                 mineField.getGrid[row][column].setCor("blue")
                 
                 if mineField.getGrid[row][column].getQuantidadeMinas() > 0
                     printarNumeroBombas(mineField, row, column)
+                    mineField.setCelulasDescobertas(mineField.getCelulasDescobertas() + 1)
                 else
                     pairVector = especialCase(mineField.getGrid[row][column], mineField)
                     for i in pairVector do
-                        mineField.setCelulasDescobertas(mineField.getCelulasDescobertas() + 1)
                         mineField.getGrid[i[0]][i[1]].setCor("blue")
+                        mineField.setCelulasDescobertas(mineField.getCelulasDescobertas() + 1)
                         printarCorAzul(mineField, i[0], i[1])
                         if mineField.getGrid[i[0]][i[1]].getQuantidadeMinas() > 0
                           printarNumeroBombas(mineField, i[0], i[1])
@@ -173,16 +173,15 @@ class Display
         visitado[indexI][indexJ] = true
         pair = [indexI, indexJ]
         list.push(pair)
-        pairVector.push(pair)
         
         while !list.empty?
             pair = list.shift()
             if !mineField.getGrid()[pair[0]][pair[1]].getMina()
                 pairVector.push(pair)
-                if mineField.getGrid()[pair[0]][pair[1]].getQuantidadeMinas() == 0
+                if mineField.getGrid()[pair[0]][pair[1]].getQuantidadeMinas() == 0 
                     neighbors = mineField.getGrid()[pair[0]][pair[1]].getArrayDeVizinhos()
                     for i in neighbors do
-                        if visitado[i.getI()][i.getJ()] == false
+                        if visitado[i.getI()][i.getJ()] == false and mineField.getGrid()[i.getI()][i.getJ()].getCor() == "black"
                             pair = [i.getI(), i.getJ()]
                             list.push(pair)
                             visitado[i.getI()][i.getJ()] = true 
@@ -327,7 +326,7 @@ end
 # end
 
 # update do
-#   puts Window.get(:fps)
+#   puts mineField.getCelulasDescobertas()
 #   display.win(mineField)
 # end
 

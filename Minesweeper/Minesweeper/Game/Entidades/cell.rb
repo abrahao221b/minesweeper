@@ -1,4 +1,4 @@
-require 'ruby2d'
+
 
 # Entidade célula do campo minado
 class Celula
@@ -89,5 +89,4 @@ class Celula
     def getCor()
         return self.cor
     end
-
 end

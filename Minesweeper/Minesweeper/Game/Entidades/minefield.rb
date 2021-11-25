@@ -84,16 +84,6 @@ class CampoMinado
         end
     end
 
-    def findCell(x, y)
-        for arr in self.grid do
-            for cell in arr do
-                if cell.getX() == x and cell.getY() == y
-                    return cell
-                end
-            end
-        end
-    end
-
     def setCelulasDescobertas(valor)
         self.celulasDescobertas = valor
     end
