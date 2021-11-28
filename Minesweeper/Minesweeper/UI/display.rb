@@ -4,13 +4,12 @@ require_relative 'D:\Projetos Com Ruby\Minesweeper\Minesweeper\Game\Entidades\mi
 
 class Display
 
-    attr_accessor :altura, :largura, :background, :tituloTela, :tituloJogo, :end
+    attr_accessor :altura, :largura, :background, :positionBotaoVoltar, :end
     
     def initialize(altura, largura)
         @altura = altura
         @largura = largura
-        @tituloTela = 'Game'
-        @tituloJogo = 'Campo Minado'
+        @positionBotaoVoltar = [275, 325, 3, 23]
         @end = false
     end
 
@@ -152,6 +151,14 @@ class Display
         end 
     end
 
+    def mousePressionadoEsquerdoNoBotaoVoltar(event_x , event_y)
+        if (event_x > self.positionBotaoVoltar[0]  and event_x < self.positionBotaoVoltar[1] and 
+            event_y > self.positionBotaoVoltar[2]  and event_y < self.positionBotaoVoltar[3])
+            return true
+        end
+        return false
+    end
+
     # Caso especial celula com nenhuma bomba ao redor, usando BST (Binary Search Tree)
     def especialCase(cell, mineField)
         
@@ -198,7 +205,7 @@ class Display
     def loose(mineField)
         Text.new(
             'You Lose!',
-            x: 100, y: 200,
+            x: 190, y: 200,
             style: 'bold',
             size: 50,
             color: 'yellow',
@@ -221,7 +228,7 @@ class Display
         if mineField.getCelulasDescobertas() == 100
             Text.new(
                 'You Win!',
-                x: 100, y: 200,
+                x: 190, y: 200,
                 style: 'bold',
                 size: 50,
                 color: 'green',
@@ -235,34 +242,67 @@ class Display
     # Printa os limites do campo
     def lineDisplay()
         Line.new(
-            x1: 15, y1:30,
-            x2: 432, y2: 30,
+            x1: 95, y1:30,
+            x2: 512, y2: 30,
             width: 5,
             color: 'black',
             z: 0
         )
         Line.new(
-            x1: 18, y1: 30,
-            x2: 18, y2: 442,
+            x1: 98, y1: 30,
+            x2: 98, y2: 442,
             width: 5,
             color: 'black',
             z: 0
         )
         Line.new(
-            x1: 430, y1: 30,
-            x2: 430, y2: 442,
+            x1: 510, y1: 30,
+            x2: 510, y2: 442,
             width: 5,
             color: 'black',
             z: 0
         )
         Line.new(
-            x1: 15, y1: 442,
-            x2: 432, y2: 442,
+            x1: 95, y1: 440,
+            x2: 510, y2: 440,
             width: 5,
             color: 'black',
             z: 0
         )
     end
+
+    def botaoVoltar()
+        Rectangle.new(
+            x: 275, 
+            y: 3,
+            width: 50,
+            height: 20,
+            color: 'red',
+            z: 0
+        )
+
+        Text.new(
+            'Voltar',
+            x: 284, y: 5,
+            style: 'bold',
+            size: 10,
+            color: 'blue',
+            rotate: 0,
+            z: 0
+        )
+    end
+
+    def fieldBackground()
+        Square.new(
+            x: 100, 
+            y: 30,
+            size: 410,
+            color: 'red',
+            z: 0 
+        )
+    end
+    
+    
 
     def getEspecialCase()
         return self.especialCase
@@ -279,14 +319,6 @@ class Display
     def getAltura()
         return self.altura
     end
-    
-    def getTituloTela()
-        return self.tituloTela
-    end
-    
-    def getTituloJogo()
-        return self.tituloJogo
-    end
 
     def getBackGround()
         return self.background
@@ -294,7 +326,7 @@ class Display
 
 end
 
-# # teste
+# teste
 
 # display = Display.new(450, 450)
 
@@ -304,9 +336,9 @@ end
 # Window.set background: 'white'
 
 # # Colocando o título da tela
-# Window.set title: display.getTituloJogo()
+# Window.set title: 'Campo Minado'
 
-
+# voltarMenu = false
 
 # mineField = CampoMinado.new(400, 400)
 # mineField.verificaVizinhos()
@@ -319,6 +351,7 @@ end
 #         case event.button
 #         when :left
 #             display.mousePressionadoEsquerdo(mineField, event.x, event.y)
+#             voltarMenu = display.mousePressionadoEsquerdoNoBotaoVoltar(event.x , event.y)
 #         when :right
 #             display.mousePressionadoDireito(mineField, event.x, event.y)
 #         end
@@ -326,7 +359,6 @@ end
 # end
 
 # update do
-#   puts mineField.getCelulasDescobertas()
 #   display.win(mineField)
 # end
 

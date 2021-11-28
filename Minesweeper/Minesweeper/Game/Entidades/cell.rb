@@ -11,7 +11,7 @@ class Celula
         @i = i
         @j = j
         @size = size
-        @x = i*self.size + 20
+        @x = i*self.size + 100
         @y = j*self.size + 30
         @quantidadeMinas = 0
         @arrayDeVizinhos = Array[]

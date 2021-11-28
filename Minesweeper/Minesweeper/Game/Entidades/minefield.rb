@@ -25,7 +25,6 @@ class CampoMinado
                 grid[k][w] = Celula.new(k, w, self.celulas.getSize())
                 grid[k][w].setMina()
                 w += 1
-                            
             end
             k += 1
         end
@@ -62,7 +61,6 @@ class CampoMinado
             end
             k += 1
         end
-
     end
     
 
