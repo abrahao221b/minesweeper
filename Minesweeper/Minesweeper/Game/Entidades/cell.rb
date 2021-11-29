@@ -4,15 +4,15 @@
 class Celula
     attr_accessor :mina, :x, :y, :i, :j, :size, :cor, :quantidadeMinas, :arrayDeVizinhos     
     
-    def initialize(i, j, size)
+    def initialize(i, j, size, deslocamentoX, deslocamentoY)
         @mina = true
         @revelado = false
         @cor = "black"
         @i = i
         @j = j
         @size = size
-        @x = i*self.size + 100
-        @y = j*self.size + 30
+        @x = i*self.size + deslocamentoX + 2*i
+        @y = j*self.size + deslocamentoY + 2*j
         @quantidadeMinas = 0
         @arrayDeVizinhos = Array[]
     end

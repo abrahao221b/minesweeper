@@ -1,14 +1,16 @@
 require 'ruby2d'
 require 'ostruct'
 require_relative 'D:\Projetos Com Ruby\Minesweeper\Minesweeper\Game\Entidades\minefield.rb'
+require_relative 'D:\Projetos Com Ruby\Minesweeper\Minesweeper\Game\IA\IA.rb' 
 
 class Display
 
-    attr_accessor :altura, :largura, :background, :positionBotaoVoltar, :end
+    attr_accessor :altura, :largura, :tamanho, :background, :positionBotaoVoltar, :end
     
-    def initialize(altura, largura)
+    def initialize(altura, largura, tamanho)
         @altura = altura
         @largura = largura
+        @tamanho = tamanho
         @positionBotaoVoltar = [275, 325, 3, 23]
         @end = false
     end
@@ -21,7 +23,7 @@ class Display
         end
     end
 
-    def atualizarCampo(mineField, row, column)
+    def atualizarCampo(mineField, row, column, iaVez)
         if (mineField.getGrid[row][column].getCor() == "black")
             if !mineField.getGrid[row][column].getMina() 
                 printarCorAzul(mineField, row, column)
@@ -42,6 +44,9 @@ class Display
                     end
                 end
             else
+                boom = Music.new('D:\Projetos Com Ruby\Minesweeper\Minesweeper\Dados\explosionSound.mp3')
+                boom.volume = 50
+                boom.play
                 loose(mineField)
             end
         end
@@ -49,8 +54,8 @@ class Display
 
     def printarCorPreta(mineField, row, column)
         s = Square.new(
-            x: mineField.getGrid[row][column].getX() + mineField.getGrid[row][column].getI(), 
-            y: mineField.getGrid[row][column].getY() + mineField.getGrid[row][column].getJ(),
+            x: mineField.getGrid[row][column].getX(), 
+            y: mineField.getGrid[row][column].getY(),
             size: mineField.getGrid[row][column].getSize(),
             color: 'black',
             z: 0
@@ -61,9 +66,9 @@ class Display
     def printarCorVermelha(mineField, row, column)
         Image.new(
             'D:\Projetos Com Ruby\MinesweeperTestes\Minesweeper\Minesweeper\Dados\flag.png',
-            x: (mineField.getGrid[row][column].getSize()/4) + mineField.getGrid[row][column].getX(), 
-            y: (mineField.getGrid[row][column].getSize()/4) + mineField.getGrid[row][column].getY(),
-            width: 30, height: 30,
+            x: mineField.getGrid[row][column].getX(), 
+            y: mineField.getGrid[row][column].getY(),
+            width: mineField.getGrid[row][column].getSize(), height: mineField.getGrid[row][column].getSize(),
             color: [1.0, 1.0, 1.0, 1.0],
             rotate: 0,
             z: 0
@@ -72,8 +77,8 @@ class Display
 
     def printarCorAzul(mineField, row, column)
         Square.new(
-            x: mineField.getGrid[row][column].getX() + mineField.getGrid[row][column].getI(), 
-            y: mineField.getGrid[row][column].getY() + mineField.getGrid[row][column].getJ(),
+            x: mineField.getGrid[row][column].getX(), 
+            y: mineField.getGrid[row][column].getY(),
             size: mineField.getGrid[row][column].getSize(),
             color: 'blue',
             z: 0 
@@ -83,10 +88,10 @@ class Display
     def printarNumeroBombas(mineField, row, column)
         Text.new(
             String(mineField.getGrid[row][column].getQuantidadeMinas()),
-            x: (mineField.getGrid[row][column].getSize()/3) + mineField.getGrid[row][column].getX() + mineField.getGrid[row][column].getI(), 
-            y: (mineField.getGrid[row][column].getSize()/4) + mineField.getGrid[row][column].getY() + mineField.getGrid[row][column].getJ(),
+            x: (mineField.getGrid[row][column].getSize()*0.2) + mineField.getGrid[row][column].getX(), 
+            y: mineField.getGrid[row][column].getY(),
             style: 'bold',
-            size: mineField.getGrid[row][column].getSize() / 2,
+            size: (mineField.getGrid[row][column].getSize()*0.9),
             color: 'black',
             rotate: 0,
             z: 0
@@ -95,18 +100,18 @@ class Display
     
     def printarBomba(mineField, row, column)
         Square.new(
-            x: mineField.getGrid[row][column].getX() + mineField.getGrid[row][column].getI(), 
-            y: mineField.getGrid[row][column].getY() + mineField.getGrid[row][column].getJ(),
+            x: mineField.getGrid[row][column].getX(), 
+            y: mineField.getGrid[row][column].getY(),
             size: mineField.getGrid[row][column].getSize(),
             color: 'green',
             z: 0 
         )
         bomb = Sprite.new(
             'D:\Projetos Com Ruby\MinesweeperTestes\Minesweeper\Minesweeper\Dados\bomoSpriteNew.png',
-            x: (mineField.getGrid[row][column].getSize()/4) + mineField.getGrid[row][column].getX() + mineField.getGrid[row][column].getI(), 
-            y: (mineField.getGrid[row][column].getSize()/4) + mineField.getGrid[row][column].getY() + mineField.getGrid[row][column].getJ(),
-            width: 20,
-            height: 20,
+            x: mineField.getGrid[row][column].getX(), 
+            y: mineField.getGrid[row][column].getY(),
+            width: mineField.getGrid[row][column].getSize(),
+            height: mineField.getGrid[row][column].getSize(),
             rotate: 90,
             clip_width: 80,
             time: 30,
@@ -122,7 +127,7 @@ class Display
             for cell in arr do
                 if (cell.mouseCelulaStatus(event_x, event_y))
                     if cell.getCor() == "black"
-                        atualizarCampo(mineField, cell.getI(), cell.getJ())
+                        atualizarCampo(mineField, cell.getI(), cell.getJ(), false)
                     end
                 end
             end
@@ -154,6 +159,7 @@ class Display
     def mousePressionadoEsquerdoNoBotaoVoltar(event_x , event_y)
         if (event_x > self.positionBotaoVoltar[0]  and event_x < self.positionBotaoVoltar[1] and 
             event_y > self.positionBotaoVoltar[2]  and event_y < self.positionBotaoVoltar[3])
+            self.end = true
             return true
         end
         return false
@@ -166,13 +172,14 @@ class Display
         indexJ = cell.getJ()
 
         pair = OpenStruct.new
-        visitado = Array.new(10){Array.new(10)}
+        visitado = Array.new(self.tamanho){Array.new(self.tamanho)}
         pairVector = Array[]
         
         list = Array[]
-       
-        for i in 0..9 do
-            for j in 0..9 do
+        range = self.tamanho - 1
+
+        for i in 0..range do
+            for j in 0..range do
                 visitado[i][j] = false
             end
         end
@@ -224,50 +231,158 @@ class Display
     end
 
     # Verifica se o jogador ganhou
-    def win(mineField)
-        if mineField.getCelulasDescobertas() == 100
+    def win(mineField, tamanho, iaVez)
+        valor = tamanho * tamanho
+        if mineField.getCelulasDescobertas() == valor and iaVez
             Text.new(
                 'You Win!',
                 x: 190, y: 200,
                 style: 'bold',
-                size: 50,
+                size: 53,
                 color: 'green',
                 rotate: 0,
                 z: 0
             )
             self.end = true
+        elsif mineField.getCelulasDescobertas() == valor and !iaVez
+            loose(mineField)
         end
     end
     
     # Printa os limites do campo
-    def lineDisplay()
+    def lineDisplay(tamanho)
+        if tamanho == 8
+            lineTamanho8()
+        elsif tamanho == 10
+            lineTamanho10()
+        elsif tamanho == 16 
+            lineTamanho16()
+        elsif tamanho == 20
+            lineTamanho20()
+        end 
+    end
+
+    def lineTamanho8()
         Line.new(
-            x1: 95, y1:30,
-            x2: 512, y2: 30,
+            x1: 95, y1:32,
+            x2: 513, y2: 32,
             width: 5,
             color: 'black',
-            z: 0
+            z: 1
         )
         Line.new(
             x1: 98, y1: 30,
-            x2: 98, y2: 442,
+            x2: 98, y2: 444,
             width: 5,
             color: 'black',
-            z: 0
+            z: 1
         )
         Line.new(
-            x1: 510, y1: 30,
-            x2: 510, y2: 442,
+            x1: 513, y1: 29,
+            x2: 513, y2: 444,
             width: 5,
             color: 'black',
-            z: 0
+            z: 1
         )
         Line.new(
-            x1: 95, y1: 440,
-            x2: 510, y2: 440,
+            x1: 95, y1: 444,
+            x2: 515, y2: 444,
             width: 5,
             color: 'black',
-            z: 0
+            z: 1
+        )
+    end
+
+    def lineTamanho10()
+        Line.new(
+            x1: 95, y1:32,
+            x2: 518, y2: 32,
+            width: 5,
+            color: 'black',
+            z: 1
+        )
+        Line.new(
+            x1: 98, y1: 30,
+            x2: 98, y2: 448,
+            width: 5,
+            color: 'black',
+            z: 1
+        )
+        Line.new(
+            x1: 518, y1: 29,
+            x2: 518, y2: 448,
+            width: 5,
+            color: 'black',
+            z: 1
+        )
+        Line.new(
+            x1: 95, y1: 448,
+            x2: 520, y2: 448,
+            width: 5,
+            color: 'black',
+            z: 1
+        )
+    end
+
+    def lineTamanho16()
+        Line.new(
+            x1: 95, y1:30,
+            x2: 530, y2: 30,
+            width: 5,
+            color: 'black',
+            z: 1
+        )
+        Line.new(
+            x1: 98, y1: 30,
+            x2: 98, y2: 460,
+            width: 5,
+            color: 'black',
+            z: 1
+        )
+        Line.new(
+            x1: 530, y1: 27,
+            x2: 530, y2: 460,
+            width: 5,
+            color: 'black',
+            z: 1
+        )
+        Line.new(
+            x1: 95, y1: 460,
+            x2: 532, y2: 460,
+            width: 5,
+            color: 'black',
+            z: 1
+        )
+    end
+    
+    def lineTamanho20()
+        Line.new(
+            x1: 95, y1:30,
+            x2: 538, y2: 30,
+            width: 5,
+            color: 'black',
+            z: 1
+        )
+        Line.new(
+            x1: 98, y1: 30,
+            x2: 98, y2: 468,
+            width: 5,
+            color: 'black',
+            z: 1
+        )
+        Line.new(
+            x1: 538, y1: 27,
+            x2: 538, y2: 468,
+            width: 5,
+            color: 'black',
+            z: 1
+        )
+        Line.new(
+            x1: 95, y1: 468,
+            x2: 540, y2: 468,
+            width: 5,
+            color: 'black',
+            z: 1
         )
     end
 
@@ -292,14 +407,40 @@ class Display
         )
     end
 
-    def fieldBackground()
-        Square.new(
-            x: 100, 
-            y: 30,
-            size: 410,
-            color: 'red',
-            z: 0 
-        )
+    def fieldBackground(tamanho)
+        if tamanho == 8 
+            Square.new(
+                x: 100, 
+                y: 30,
+                size: 411,
+                color: 'red',
+                z: 0 
+            )
+        elsif tamanho == 10 
+            Square.new(
+                x: 100, 
+                y: 30,
+                size: 416,
+                color: 'red',
+                z: 0 
+            )
+        elsif tamanho == 16
+            Square.new(
+                x: 100, 
+                y: 30,
+                size: 427,
+                color: 'red',
+                z: 0 
+            )
+        elsif tamanho == 20
+            Square.new(
+                x: 100, 
+                y: 30,
+                size: 437,
+                color: 'red',
+                z: 0 
+            )
+        end
     end
     
     
@@ -323,15 +464,19 @@ class Display
     def getBackGround()
         return self.background
     end
-
+    
+    def getTamanho()
+        return self.tamanho
+    end
+    
 end
 
 # teste
 
-# display = Display.new(450, 450)
+# display = Display.new(600, 450, 16)
 
 # # Setando a window e seu tamanho
-# Window.set width: display.getLargura, height: display.getLargura()
+# Window.set width: display.getLargura(), height: display.getAltura()
 
 # Window.set background: 'white'
 
@@ -340,10 +485,10 @@ end
 
 # voltarMenu = false
 
-# mineField = CampoMinado.new(400, 400)
+# mineField = CampoMinado.new(400, 400, 16, 100, 30)
 # mineField.verificaVizinhos()
 # mineField.radarDeMinas()
-# display.lineDisplay()
+# # display.lineDisplay(16)
 # display.displayCelulas(mineField)
 
 # on :mouse_down do |event|
@@ -359,7 +504,7 @@ end
 # end
 
 # update do
-#   display.win(mineField)
+#   display.win(mineField, 10)
 # end
 
 # Window.show 

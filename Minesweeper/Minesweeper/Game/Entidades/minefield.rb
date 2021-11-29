@@ -3,15 +3,26 @@ require_relative "cell.rb"
 # Entidade campo minado
 class CampoMinado
 
-    attr_accessor :altura, :largura, :colunas, :linhas, :grid, :celulas, :celulasDescobertas
+    attr_accessor :altura, :largura, :tamanho, :celulaSize, :deslocamentoX, :deslocamentoY, :colunas, :linhas, :grid, :celulasDescobertas
 
-    def initialize(altura, largura)
+    def initialize(altura, largura, tamanho, deslocamentoX, deslocamentoY)
         @altura = altura
         @largura = largura
         @celulasDescobertas = 0
-        @celulas = Celula.new(0, 0, 40)
-        @linhas = self.altura / self.celulas.getSize()
-        @colunas =  self.largura / self.celulas.getSize()
+        @tamanho = tamanho
+        @deslocamentoX = deslocamentoX
+        @deslocamentoY = deslocamentoY
+        if tamanho == 8
+            @celulaSize = 50
+        elsif tamanho == 10
+            @celulaSize = 40
+        elsif tamanho == 16
+            @celulaSize = 25
+        elsif tamanho == 20
+            @celulaSize = 20
+        end
+        @linhas = self.altura / celulaSize
+        @colunas =  self.largura / celulaSize
         @grid = criarArray2D()              
     end
 
@@ -22,7 +33,7 @@ class CampoMinado
         self.linhas.times do
             w = 0 
             self.colunas.times do
-                grid[k][w] = Celula.new(k, w, self.celulas.getSize())
+                grid[k][w] = Celula.new(k, w, self.celulaSize, deslocamentoX, deslocamentoY)
                 grid[k][w].setMina()
                 w += 1
             end

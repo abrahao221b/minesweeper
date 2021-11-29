@@ -4,23 +4,25 @@ require_relative 'D:\Projetos Com Ruby\Minesweeper\Minesweeper\UI\display.rb'
 
 class Menu
 
-    attr_accessor :iniciar, :novoJogo, :restart, :encerrarJogo, :botaoPositions, :comando
+    attr_accessor :jogo8por8, :jogo10por10, :jogo16por16, :jogo20por20, :encerrarJogo, :botaoPositions, :comando
     
     def initialize()
-        @iniciar = false
-        @novoJogo = false
-        @restart = false
+        @jogo8por8 = false
+        @jogo10por10 = false
+        @jogo16por16 = false
+        @jogo20por20 = false
         @encerrarJogo = false
-        @comando = {iniciar: 'iniciar', restart: 'restart', encerrarJogo: 'encerrarJogo'}
-        @botaoPositions = {iniciar: [70, 170, 120, 170], restart: [70, 170, 190, 240], encerrarJogo: [92, 144, 275, 328]}
+        @comando = {tabuleiro8: 'tabuleiro 8×8', tabuleiro10: 'tabuleiro 10×10', 
+            tabuleiro16: 'tabuleiro 16×16', tabuleiro20: 'tabuleiro 20×20', encerrarJogo: 'encerrarJogo'}
+        @botaoPositions = {tabuleiro8: [70, 202, 90, 140], tabuleiro10: [70, 202, 160, 210],
+            tabuleiro16: [70, 202, 230, 280], tabuleiro20: [70, 202, 300, 350], encerrarJogo: [105, 165, 365, 425]}
     end
 
 
     def mousePressionadoEsquerdo(event_x , event_y)
-    
-        keys = self.botaoPositions.keys    
+        keys = self.botaoPositions.keys
 
-        for i in 0..2 do
+        for i in 0..4 do
             if (event_x > self.botaoPositions[keys[i]][0]  and event_x < self.botaoPositions[keys[i]][1] and 
                 event_y > self.botaoPositions[keys[i]][2]  and event_y < self.botaoPositions[keys[i]][3])
                 menuAction(String(keys[i])) 
@@ -30,30 +32,34 @@ class Menu
 
     def menuAction(action)
         case 
-        when String(self.comando.key('iniciar')) == action 
-            botaoIniciarAction()
-        when String(self.comando.key('restart')) == action
-            botaoRestartAction()
+        when String(self.comando.key('tabuleiro 8×8')) == action 
+            self.jogo8por8 = true
+        when String(self.comando.key('tabuleiro 10×10')) == action
+            self.jogo10por10 = true
+        when String(self.comando.key('tabuleiro 16×16')) == action
+            self.jogo16por16 = true
+        when String(self.comando.key('tabuleiro 20×20')) == action
+            self.jogo20por20 = true
         when String(self.comando.key('encerrarJogo')) == action
-            botaoSairAction()
+            self.encerrarJogo = true
         end
     end
     
-
-    def criarBotaoIniciar()
+    # Já setado
+    def criarBotaoTabuleiro8por8()
         Rectangle.new(
             x: 70, 
-            y: 120,
-            width: 100,
+            y: 90,
+            width: 132,
             height: 50,
             color: 'red',
             z: 1
         )
 
         Text.new(
-            "Iniciar",
-            x: 98, 
-            y: 135,
+            "Tabuleiro 8×8",
+            x: 83, 
+            y: 105,
             style: 'bold',
             size: 15,
             color: 'black',
@@ -62,20 +68,67 @@ class Menu
         ) 
     end
     
-    def criarBotaoRestart()
+    # Já setado
+    def criarBotaoTabuleiro10por10()
         Rectangle.new(
             x: 70, 
-            y: 190,
-            width: 100,
+            y: 160,
+            width: 132,
             height: 50,
             color: 'red',
             z: 1
         )
 
         Text.new(
-            "Restart",
-            x: 93, 
-            y: 205,
+            "Tabuleiro 10×10",
+            x: 78, 
+            y: 175,
+            style: 'bold',
+            size: 15,
+            color: 'black',
+            rotate: 0,
+            z: 1
+        ) 
+        
+    end
+
+    def criarBotaoTabuleiro16por16()
+        Rectangle.new(
+            x: 70, 
+            y: 230,
+            width: 132,
+            height: 50,
+            color: 'red',
+            z: 1
+        )
+
+        Text.new(
+            "Tabuleiro 16×16",
+            x: 78, 
+            y: 245,
+            style: 'bold',
+            size: 15,
+            color: 'black',
+            rotate: 0,
+            z: 1
+        ) 
+        
+    end
+
+    def criarBotaoTabuleiro20por20()
+        Rectangle.new(
+            x: 70, 
+            y: 300,
+            width: 132,
+            height: 50,
+            color: 'red',
+            z: 1
+        )
+
+        Text.new(
+            "Tabuleiro 20×20",
+            x: 78, 
+            y: 315,
             style: 'bold',
             size: 15,
             color: 'black',
@@ -87,7 +140,7 @@ class Menu
     
     def criarBotaoSair()
         Circle.new(
-            x: 118, y: 300,
+            x: 135, y: 395,
             radius: 30,
             sectors: 8,
             color: 'red',
@@ -96,8 +149,8 @@ class Menu
 
         Text.new(
             "Sair",
-            x: 103, 
-            y: 291,
+            x: 120, 
+            y: 384,
             style: 'bold',
             size: 15,
             color: 'white',
@@ -105,74 +158,45 @@ class Menu
             z: 1
         )
     end
-    
-    def botaoIniciarAction()
-       self.iniciar = true
+
+    def setJogo8por8(valor)
+        self.jogo8por8 = valor
     end
 
-    def botaoRestartAction()
-        self.restart = true
-    end
-    
-    def botaoSairAction()
-        self.encerrarJogo = true
+    def setJogo10por10(valor)
+        self.jogo10por10 = valor
     end
 
-    def setNovoJogo(valor)
-        self.novoJogo = valor
+    def setJogo16por16(valor)
+        self.jogo16por16 = valor
     end
 
-    def setIniciar(valor)
-        self.iniciar = valor
-    end
-    
-    def setRestart(valor)
-        self.restart = valor
+    def setJogo20por20(valor)
+        self.jogo20por20 = valor
     end
 
-    def setSair(valor)
+    def setEncerrarJogo(valor)
         self.encerrarJogo = valor
     end
-    
 
-    def getIniciar()
-        return self.iniciar
+    def getJogo8por8()
+        return self.jogo8por8
+    end
+
+    def getJogo10por10()
+        return self.jogo10por10
+    end
+
+    def getJogo16por16()
+        return self.jogo16por16
+    end
+
+    def getJogo20por20()
+        return self.jogo20por20
     end
     
     def getEncerrarJogo()
         return self.encerrarJogo
-    end
-        
-    def getNovoJogo()
-        return self.novoJogo
-    end
-    
-    def getRestart()
-        return self.restart
-    end
-
-    def getBotaoIniciar()
-        return self.botaoIniciar
-    end
-    
-    def getBotaoRestart()
-        return self.botaoRestart
-    end
-    
-    def getBotaoSair()
-        return self.botaoSair
-    end
-
-    def getBackground()
-        return self.background
-    end
-
-    def getTituloTela()
-        return self.tituloTela
-    end
-    
-    def getTituloJogo()
-        return self.tituloJogo
     end
     
     def getComando()
