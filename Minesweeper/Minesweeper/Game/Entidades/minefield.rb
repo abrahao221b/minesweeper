@@ -121,17 +121,3 @@ class CampoMinado
         return self.grid
     end
 end
-
-# # Teste
-# minefield = CampoMinado.new(400,400)
-# minefield.verificaVizinhos()
-# minefield.radarDeMinas()
-
-# i = 0
-# for arr in minefield.getGrid() do
-#     for cell in arr do
-#         minefield.setCelulasDescobertas(i)
-#         puts minefield.getCelulasDescobertas()
-#         i += 1
-#     end
-# end

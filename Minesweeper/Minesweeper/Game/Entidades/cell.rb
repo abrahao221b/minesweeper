@@ -1,12 +1,9 @@
-
-
 # Entidade célula do campo minado
 class Celula
     attr_accessor :mina, :x, :y, :i, :j, :size, :cor, :quantidadeMinas, :arrayDeVizinhos     
     
     def initialize(i, j, size, deslocamentoX, deslocamentoY)
         @mina = true
-        @revelado = false
         @cor = "black"
         @i = i
         @j = j

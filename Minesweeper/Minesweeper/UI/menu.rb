@@ -1,10 +1,10 @@
 require 'ruby2d'
 require 'ostruct'
-require_relative 'D:\Projetos Com Ruby\Minesweeper\Minesweeper\UI\display.rb'
+require_relative '/Minesweeper/Minesweeper/UI/display.rb'
 
 class Menu
 
-    attr_accessor :jogo8por8, :jogo10por10, :jogo16por16, :jogo20por20, :encerrarJogo, :botaoPositions, :comando
+    attr_accessor :jogo8por8, :jogo10por10, :jogo16por16, :jogo20por20, :encerrarJogo, :habilitarIA, :botaoPositions, :comando
     
     def initialize()
         @jogo8por8 = false
@@ -12,17 +12,19 @@ class Menu
         @jogo16por16 = false
         @jogo20por20 = false
         @encerrarJogo = false
+        @habilitarIA = false
         @comando = {tabuleiro8: 'tabuleiro 8×8', tabuleiro10: 'tabuleiro 10×10', 
-            tabuleiro16: 'tabuleiro 16×16', tabuleiro20: 'tabuleiro 20×20', encerrarJogo: 'encerrarJogo'}
+            tabuleiro16: 'tabuleiro 16×16', tabuleiro20: 'tabuleiro 20×20', habilitarIA: 'habilitarIA', encerrarJogo: 'encerrarJogo'}
         @botaoPositions = {tabuleiro8: [70, 202, 90, 140], tabuleiro10: [70, 202, 160, 210],
-            tabuleiro16: [70, 202, 230, 280], tabuleiro20: [70, 202, 300, 350], encerrarJogo: [105, 165, 365, 425]}
+            tabuleiro16: [70, 202, 230, 280], tabuleiro20: [70, 202, 300, 350], habilitarIA: [70, 202, 30, 80], encerrarJogo: [105, 165, 365, 425]}
     end
 
 
     def mousePressionadoEsquerdo(event_x , event_y)
+        
         keys = self.botaoPositions.keys
 
-        for i in 0..4 do
+        for i in 0..5 do
             if (event_x > self.botaoPositions[keys[i]][0]  and event_x < self.botaoPositions[keys[i]][1] and 
                 event_y > self.botaoPositions[keys[i]][2]  and event_y < self.botaoPositions[keys[i]][3])
                 menuAction(String(keys[i])) 
@@ -40,12 +42,39 @@ class Menu
             self.jogo16por16 = true
         when String(self.comando.key('tabuleiro 20×20')) == action
             self.jogo20por20 = true
+        when String(self.comando.key('habilitarIA')) == action
+            if !self.habilitarIA
+               self.habilitarIA = true 
+            else
+               self.habilitarIA = false
+            end
         when String(self.comando.key('encerrarJogo')) == action
             self.encerrarJogo = true
         end
     end
-    
-    # Já setado
+
+    def criarBotaoHabilitarIA()
+        Rectangle.new(
+            x: 70, 
+            y: 30,
+            width: 132,
+            height: 50,
+            color: 'red',
+            z: 1
+        )
+
+        Text.new(
+            "Habilitar IA",
+            x: 90, 
+            y: 45,
+            style: 'bold',
+            size: 15,
+            color: 'black',
+            rotate: 0,
+            z: 1
+        ) 
+    end
+
     def criarBotaoTabuleiro8por8()
         Rectangle.new(
             x: 70, 
@@ -68,7 +97,6 @@ class Menu
         ) 
     end
     
-    # Já setado
     def criarBotaoTabuleiro10por10()
         Rectangle.new(
             x: 70, 
@@ -175,6 +203,10 @@ class Menu
         self.jogo20por20 = valor
     end
 
+    def setHabilitarIA(valor)
+        self.habilitarIA = valor
+    end
+
     def setEncerrarJogo(valor)
         self.encerrarJogo = valor
     end
@@ -197,6 +229,10 @@ class Menu
     
     def getEncerrarJogo()
         return self.encerrarJogo
+    end
+
+    def getHabilitarIA()
+        return self.habilitarIA
     end
     
     def getComando()

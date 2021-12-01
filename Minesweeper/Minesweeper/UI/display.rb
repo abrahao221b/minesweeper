@@ -1,7 +1,7 @@
 require 'ruby2d'
 require 'ostruct'
-require_relative 'D:\Projetos Com Ruby\Minesweeper\Minesweeper\Game\Entidades\minefield.rb'
-require_relative 'D:\Projetos Com Ruby\Minesweeper\Minesweeper\Game\IA\IA.rb' 
+require_relative '/Minesweeper/Minesweeper/Game/Entidades/minefield.rb'
+require_relative '/Minesweeper/Minesweeper/Game/IA/IA.rb' 
 
 class Display
 
@@ -23,7 +23,7 @@ class Display
         end
     end
 
-    def atualizarCampo(mineField, row, column, iaVez)
+    def atualizarCampo(mineField, row, column)
         if (mineField.getGrid[row][column].getCor() == "black")
             if !mineField.getGrid[row][column].getMina() 
                 printarCorAzul(mineField, row, column)
@@ -44,9 +44,10 @@ class Display
                     end
                 end
             else
-                boom = Music.new('D:\Projetos Com Ruby\Minesweeper\Minesweeper\Dados\explosionSound.mp3')
+                boom = Music.new('/Minesweeper/Minesweeper/Dados/explosionSound.mp3')
                 boom.volume = 50
                 boom.play
+                sleep(0.1)                
                 loose(mineField)
             end
         end
@@ -65,7 +66,7 @@ class Display
     
     def printarCorVermelha(mineField, row, column)
         Image.new(
-            'D:\Projetos Com Ruby\MinesweeperTestes\Minesweeper\Minesweeper\Dados\flag.png',
+            '/Minesweeper/Minesweeper/Dados/flag.png',
             x: mineField.getGrid[row][column].getX(), 
             y: mineField.getGrid[row][column].getY(),
             width: mineField.getGrid[row][column].getSize(), height: mineField.getGrid[row][column].getSize(),
@@ -107,7 +108,7 @@ class Display
             z: 0 
         )
         bomb = Sprite.new(
-            'D:\Projetos Com Ruby\MinesweeperTestes\Minesweeper\Minesweeper\Dados\bomoSpriteNew.png',
+            '/Minesweeper/Minesweeper/Dados/bomoSpriteNew.png',
             x: mineField.getGrid[row][column].getX(), 
             y: mineField.getGrid[row][column].getY(),
             width: mineField.getGrid[row][column].getSize(),
@@ -127,7 +128,7 @@ class Display
             for cell in arr do
                 if (cell.mouseCelulaStatus(event_x, event_y))
                     if cell.getCor() == "black"
-                        atualizarCampo(mineField, cell.getI(), cell.getJ(), false)
+                        atualizarCampo(mineField, cell.getI(), cell.getJ())
                     end
                 end
             end
@@ -208,7 +209,6 @@ class Display
         return pairVector
     end
     
-
     def loose(mineField)
         Text.new(
             'You Lose!',
@@ -231,21 +231,38 @@ class Display
     end
 
     # Verifica se o jogador ganhou
-    def win(mineField, tamanho, iaVez)
+    def win(mineField, tamanho, iaVez, iaHabilitar)
         valor = tamanho * tamanho
-        if mineField.getCelulasDescobertas() == valor and iaVez
-            Text.new(
-                'You Win!',
-                x: 190, y: 200,
-                style: 'bold',
-                size: 53,
-                color: 'green',
-                rotate: 0,
-                z: 0
-            )
-            self.end = true
-        elsif mineField.getCelulasDescobertas() == valor and !iaVez
-            loose(mineField)
+        if !iaHabilitar
+            if mineField.getCelulasDescobertas() == valor and !iaVez
+                Text.new(
+                    'You Win!',
+                    x: 190, y: 200,
+                    style: 'bold',
+                    size: 53,
+                    color: 'green',
+                    rotate: 0,
+                    z: 0
+                )
+                self.end = true
+            elsif mineField.getCelulasDescobertas() == valor and iaVez
+                loose(mineField)
+            end
+        else
+            if mineField.getCelulasDescobertas() == valor and iaVez
+                Text.new(
+                    'You Win!',
+                    x: 190, y: 200,
+                    style: 'bold',
+                    size: 53,
+                    color: 'green',
+                    rotate: 0,
+                    z: 0
+                )
+                self.end = true
+            elsif mineField.getCelulasDescobertas() == valor and !iaVez
+                loose(mineField)
+            end
         end
     end
     
@@ -442,8 +459,6 @@ class Display
             )
         end
     end
-    
-    
 
     def getEspecialCase()
         return self.especialCase
@@ -470,41 +485,3 @@ class Display
     end
     
 end
-
-# teste
-
-# display = Display.new(600, 450, 16)
-
-# # Setando a window e seu tamanho
-# Window.set width: display.getLargura(), height: display.getAltura()
-
-# Window.set background: 'white'
-
-# # Colocando o título da tela
-# Window.set title: 'Campo Minado'
-
-# voltarMenu = false
-
-# mineField = CampoMinado.new(400, 400, 16, 100, 30)
-# mineField.verificaVizinhos()
-# mineField.radarDeMinas()
-# # display.lineDisplay(16)
-# display.displayCelulas(mineField)
-
-# on :mouse_down do |event|
-#     if !display.getEnd()
-#         case event.button
-#         when :left
-#             display.mousePressionadoEsquerdo(mineField, event.x, event.y)
-#             voltarMenu = display.mousePressionadoEsquerdoNoBotaoVoltar(event.x , event.y)
-#         when :right
-#             display.mousePressionadoDireito(mineField, event.x, event.y)
-#         end
-#     end 
-# end
-
-# update do
-#   display.win(mineField, 10)
-# end
-
-# Window.show 
