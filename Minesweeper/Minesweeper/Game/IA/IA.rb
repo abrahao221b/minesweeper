@@ -3,6 +3,7 @@ require 'ruby2d'
 require_relative '/Minesweeper/Minesweeper/Game/Entidades/minefield.rb'
 require_relative '/Minesweeper/Minesweeper/UI/display.rb'
 
+# Classe da IA
 class Ia 
 
     attr_accessor :tabelaDeCelulas, :vez
@@ -12,6 +13,7 @@ class Ia
       @vez = false
     end
     
+    # Função da jogada da IA
     def fazerJogada(mineField, display, tamanho)
         value = self.tabelaDeCelulas.shift()
         pair = value[0]
@@ -30,6 +32,7 @@ class Ia
         atualizarHash(mineField)
     end
     
+    # Coloca os valores dentro da hash
     def setTabelaDeCelulas(mineField)
         pair = OpenStruct.new
         pair = [0, 0]
@@ -49,6 +52,7 @@ class Ia
         end
     end
 
+    # Atualiza a hash
     def atualizarHash(mineField)
         pair = OpenStruct.new
 

@@ -166,7 +166,7 @@ class Display
         return false
     end
 
-    # Caso especial celula com nenhuma bomba ao redor, usando BST (Binary Search Tree)
+    # Caso especial celula com nenhuma bomba ao redor, usando BFS (Breadth-First Search)
     def especialCase(cell, mineField)
         
         indexI = cell.getI()
